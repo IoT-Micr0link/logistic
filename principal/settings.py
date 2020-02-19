@@ -25,7 +25,7 @@ SECRET_KEY = '+4)%8jk1j*&hozv$vp(-c)(c(4%dr3b#yig7zcbh96gqj-vydc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rfid.apps.RfidConfig'
 ]
 
 MIDDLEWARE = [
@@ -73,13 +74,31 @@ WSGI_APPLICATION = 'principal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.getenv('GAE_APPLICATION', None) or os.getenv('GAE_INSTANCE', None) :
+    # Running on production App Engine, so connect to Google Cloud SQL using
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': '/cloudsql/healthy-zone-266815:us-central1:iot-rfid-test',
+            'PORT': '5432',
+            'NAME': 'iot-demo',
+            'USER': 'iot_app_user',
+            'PASSWORD': 'tkGcbOC2w8x3tos1',
+        }
     }
-}
-
+else:
+    # Running locally so connect to either a local MySQL instance or connect
+    # to Cloud SQL via the proxy.
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+            'NAME': 'iot-demo',
+            'USER': 'iot_app_user',
+            'PASSWORD': 'tkGcbOC2w8x3tos1',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -118,3 +137,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
