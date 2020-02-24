@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from iot import views as iot_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', iot_views.DashboardView.as_view(), name='index'),
 ]
+

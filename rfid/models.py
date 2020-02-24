@@ -49,6 +49,7 @@ class Reading(models.Model):
     node = models.ForeignKey(Node, on_delete=models.PROTECT)
     reader = models.ForeignKey(Reader, null=True, on_delete=models.PROTECT)
     antenna = models.ForeignKey(ReaderAntenna, null=True, on_delete=models.PROTECT)
+    timestamp_reading = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{}-[{}]'.format(self.epc, self.reader)
