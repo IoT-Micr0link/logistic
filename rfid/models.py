@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
+from datetime import date
 
 
 class Location(models.Model):
@@ -7,6 +9,20 @@ class Location(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class Item(models.Model):
+    epc = models.CharField(max_length=48, primary_key=True)
+    last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
+    last_seen_timestamp = models.DateTimeField(null=True)
+    display_name = models.CharField(max_length=200)
+    data = JSONField(null=True, blank=True)
+
+    @property
+    def age(self):
+        today = date.today()
+        delta = today - self.last_seen_timestamp.date()
+        return delta.days
 
 
 class Node(models.Model):

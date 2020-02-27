@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rfid.apps.RfidConfig'
+    'rfid.apps.RfidConfig',
+    'django_tables2'
 ]
 
 MIDDLEWARE = [

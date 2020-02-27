@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from iot import views as iot_views
+from rfid import views as rfid_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', iot_views.DashboardView.as_view(), name='index'),
+    path('logistica/inventory/', rfid_views.ItemListView.as_view(), name='logistica-inventory'),
 ]
 

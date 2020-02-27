@@ -7,9 +7,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
-    <meta name="author" content="Łukasz Holeczek">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
     <title>Microlink IoT</title>
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
@@ -30,17 +27,19 @@
       // Bootstrap ID
       gtag('config', 'UA-118965717-5');
     </script>
-    <link href="{% static 'core-ui/css/coreui.css' %}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{% static 'core-ui/css/free.min.css'%}">
-    <link rel="stylesheet" href="{% static 'core-ui/css/flag.min.css'%}">
-    <link rel="stylesheet" href="{% static 'core-ui/css/brand.min.css'%}">
+    <link href="{% static 'vendor/core-ui/css/coreui.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendor/core-ui/css/free.min.css'%}">
+    <link rel="stylesheet" href="{% static 'vendor/core-ui/css/flag.min.css'%}">
+    <link rel="stylesheet" href="{% static 'vendor/core-ui/css/brand.min.css'%}">
 
   </head>
   <body class="c-app">
     {% block content %}{% endblock %}
   </body>
   <!-- CoreUI and necessary plugins-->
-  <script src="{% static 'core-ui/js/coreui.bundle.js' %}"></script>
+  <script src="{% static 'vendor/core-ui/js/coreui.bundle.js' %}"></script>
+  <script src="{% static 'vendor/chartjs/Chart.bundle.min.js' %}"></script>
   <!-- Plugins and scripts required by this view-->
   <script src="{% static '/js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
 </html>

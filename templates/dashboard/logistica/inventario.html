@@ -1,0 +1,117 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load django_tables2 %}
+{% load static %}
+{% block child %}
+<main class="c-main">
+    <div class="container-fluid">
+        <div class="fade-in">
+            <div class="row">
+                <div class="col-6 col-lg-4">
+                    <div class="card overflow-hidden">
+                        <div class="card-body p-0 d-flex align-items-center">
+                            <div class="bg-gradient-dark p-4 mfe-3">
+                                <svg class="c-icon c-icon-xl">
+                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-qr-code"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-value text-info">{{total_items}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Total unidades</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-->
+                <div class="col-6 col-lg-4">
+                    <div class="card overflow-hidden">
+                        <div class="card-body p-0 d-flex align-items-center">
+                            <div class="bg-gradient-dark p-4 mfe-3">
+                                <svg class="c-icon c-icon-xl">
+                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-house"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-value text-info">{{total_locations}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Ubicaciones</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-->
+                <div class="col-6 col-lg-4">
+                    <div class="card overflow-hidden">
+                        <div class="card-body p-0 d-flex align-items-center">
+                            <div class="bg-gradient-dark p-4 mfe-3">
+                                <svg class="c-icon c-icon-xl">
+                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-av-timer"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-value text-info">{{average_age}} dias</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Edad promedio</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-->
+            </div>
+
+            <!-- /.row-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                        {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row-->
+        </div>
+  </div>
+</main>
+{% endblock %}
+{% block extra_js %}
+<script >
+var ctx = document.getElementById('dispatch-chart');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero', 'Febrero'],
+        datasets: [{
+            label: '# unidades solicitadas',
+            data: [80, 98, 412, 50, 210, 350],
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        },
+        {
+            label: '# unidades despachadas',
+            data: [20, 20, 20, 100, 30, 32],
+            backgroundColor: 'rgba(12,173,45,0.8)',
+
+            borderColor: 'rgba(12,173,45,1)',
+            borderWidth: 1
+        }
+
+        ]
+
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                stacked: true
+            }],
+            xAxes: [{
+                stacked: true
+            }]
+
+        }
+    }
+});
+</script>
+
+{% endblock %}
