@@ -69,3 +69,32 @@ class Reading(models.Model):
 
     def __str__(self):
         return '{}-[{}]'.format(self.epc, self.reader)
+
+
+class TransferOrder(models.Model):
+    STATE = (
+        ('RE', 'Solicitado'),
+        ('IN', 'Incompleto'),
+        ('CO', 'Completado')
+    )
+    destination = models.ForeignKey(Location, on_delete=models.PROTECT)
+    expected_completion_date = models.DateField(null=True, blank=True)
+    actual_completion_date = models.DateTimeField(null=True, blank=True)
+    state = models.CharField(max_length=3, choices=STATE ,default='RE')
+
+
+class TransferOrderItem(models.Model):
+    STATE = (
+        ('RE', 'Solicitado'),
+        ('AL', 'Alistado'),
+        ('NOE', 'No entregado'),
+        ('EN', 'Entregado')
+    )
+    order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
+    item = models.ForeignKey(Item, on_delete=models.PROTECT)
+    state = models.CharField(max_length=3, choices=STATE, default='RE')
+
+    class Meta:
+        unique_together = ('order', 'item')
+
+

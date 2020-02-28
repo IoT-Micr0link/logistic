@@ -22,5 +22,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', iot_views.DashboardView.as_view(), name='index'),
     path('logistica/inventory/', rfid_views.ItemListView.as_view(), name='logistica-inventory'),
+    path('logistica/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistica-transfer-order-list'),
+    path('logistica/transfer-orders/<int:id_order>/detail',
+         rfid_views.TransferOrderDetailView.as_view(), name='logistica-transfer-order-detail'),
+    path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-reader-list'),
+    path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
+
+
 ]
 

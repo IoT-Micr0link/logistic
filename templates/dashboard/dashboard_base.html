@@ -14,31 +14,26 @@
             <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-blur"></use>
         </svg> Inventario</a>
     </li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="colors.html">
+    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "logistica-transfer-order-list" %}'>
         <svg class="c-sidebar-nav-icon">
             <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-truck"></use>
         </svg> Pedidos</a>
     </li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="colors.html">
-        <svg class="c-sidebar-nav-icon">
-            <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-object-ungroup"></use>
-        </svg> Alistamiento</a>
-    </li>
     <li class="c-sidebar-nav-title">RFID</li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="colors.html">
+    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "rfid-reader-list" %}'>
         <svg class="c-sidebar-nav-icon">
             <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-audio"></use>
         </svg>Equipos</a>
     </li>
 
-    <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link c-sidebar-nav-link-success" href="https://coreui.io" target="_top">
+    <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link c-sidebar-nav-link-success" href="#" target="_top">
         <svg class="c-sidebar-nav-icon">
           <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-cloud-download"></use>
-        </svg> Success</a></li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link c-sidebar-nav-link-danger" href="https://coreui.io/pro/" target="_top">
+        </svg> Real Time</a></li>
+    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link c-sidebar-nav-link-danger" href="#" target="_top">
         <svg class="c-sidebar-nav-icon">
           <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-layers"></use>
-        </svg> Danger<strong>!</strong></a></li>
+        </svg> Restart<strong>!</strong></a></li>
   </ul>
   <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
 </div>

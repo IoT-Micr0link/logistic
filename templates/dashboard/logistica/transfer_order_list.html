@@ -15,8 +15,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-value text-info">{{total_items}}</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Total unidades</div>
+                                <div class="text-value text-info">{{total_orders}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Total pedidos</div>
                             </div>
                         </div>
                     </div>
@@ -25,14 +25,14 @@
                 <div class="col-6 col-lg-4">
                     <div class="card overflow-hidden">
                         <div class="card-body p-0 d-flex align-items-center">
-                            <div class="bg-gradient-dark p-4 mfe-3">
+                            <div class="bg-gradient-success p-4 mfe-3">
                                 <svg class="c-icon c-icon-xl">
                                 <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-house"></use>
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-value text-info">{{total_locations}}</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Ubicaciones</div>
+                                <div class="text-value text-info">{{total_completed_orders}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Pedidos completados</div>
                             </div>
                         </div>
                     </div>
@@ -41,14 +41,14 @@
                 <div class="col-6 col-lg-4">
                     <div class="card overflow-hidden">
                         <div class="card-body p-0 d-flex align-items-center">
-                            <div class="bg-gradient-dark p-4 mfe-3">
+                            <div class="bg-gradient-warning p-4 mfe-3">
                                 <svg class="c-icon c-icon-xl">
                                 <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-av-timer"></use>
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-value text-info">{{average_age}} dias</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Edad promedio</div>
+                                <div class="text-value text-info">{{total_incomplete_orders}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Pedidos incompletos</div>
                             </div>
                         </div>
                     </div>
