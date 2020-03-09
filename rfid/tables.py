@@ -1,6 +1,7 @@
 import django_tables2 as tables
 from rfid.models import *
 from django_tables2.utils import A
+from django_tables2.paginators import LazyPaginator
 
 
 class ItemTable(tables.Table):
@@ -50,6 +51,7 @@ class ReadingsTable(tables.Table):
     reader = tables.Column(accessor='reader.name', verbose_name="Reader")
     antenna = tables.Column(accessor='antenna.name', verbose_name="Antenna")
     timestamp_reading = tables.Column(accessor='timestamp_reading', verbose_name="Timestamp")
+    paginator_class = LazyPaginator
 
     class Meta:
         model = Reading
