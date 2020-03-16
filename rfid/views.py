@@ -1,17 +1,16 @@
 from django.views import generic
-from django_tables2 import SingleTableView
+from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from statistics import mean
 
 
 class InventoryView(generic.TemplateView):
-    template_name = 'dashboard/logistica/inventario.html'
-
+    template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
 
 
 class ItemListView(SingleTableView):
     model = Item
-    template_name = 'dashboard/logistica/inventario.html'
+    template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
     table_class = ItemTable
     table_pagination = {
         'per_page': 30
@@ -21,8 +20,36 @@ class ItemListView(SingleTableView):
         context = super(ItemListView, self).get_context_data(**kwargs)
         context['total_items'] = Item.objects.all().count()
         context['total_locations'] = Location.objects.all().count()
-        context['average_age'] = mean([item.age for item in Item.objects.all()]) # this is not efficent, it should be a DB view
+        context['average_age'] = mean([item.age for item in Item.objects.all()])    # this is not efficent, it should be
+        return context                                                              # a DB view or batch process
 
+
+class SKUDetailView(SingleTableMixin, generic.detail.DetailView ):
+    model = SKU
+    template_name = 'dashboard/logistics/inventory/sku_detail.html'
+    context_object_name = "sku_object"
+    table_class = ItemTable
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def get_table_data(self):
+        return Item.objects.filter(sku=self.object)
+
+
+class SKUListView(SingleTableView):
+    model = SKU
+    template_name = 'dashboard/logistics/inventory/inventory_by_sku.html'
+    table_class = SkuInventoryTable
+    table_pagination = {
+        'per_page': 30
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super(SKUListView, self).get_context_data(**kwargs)
+        context['total_items'] = Item.objects.all().count()
+        context['total_locations'] = Location.objects.all().count()
+        context['total_referencias'] = SKU.objects.count()
         return context
 
 
@@ -58,7 +85,7 @@ class ReadersListView(SingleTableView):
 
 class TransferOrderListView(SingleTableView):
     model = TransferOrder
-    template_name = 'dashboard/logistica/transfer_order_list.html'
+    template_name = 'dashboard/logistics/transfers/transfer_order_list.html'
     table_class = TransferOrderTable
     table_pagination = {
         'per_page': 30
@@ -73,7 +100,7 @@ class TransferOrderListView(SingleTableView):
 
 
 class TransferOrderDetailView(SingleTableView):
-    template_name = 'dashboard/logistica/transfer_order_detail.html'
+    template_name = 'dashboard/logistics/transfers/transfer_order_detail.html'
     model = TransferOrderItem
     table_class = TransferOrderItemTable
     table_pagination = {

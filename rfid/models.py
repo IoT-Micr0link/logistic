@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from datetime import date
+from django.contrib.postgres.fields import HStoreField
 
 
 class Location(models.Model):
@@ -11,12 +12,25 @@ class Location(models.Model):
         return '{}'.format(self.name)
 
 
+class SKU(models.Model):
+    display_name = models.CharField(max_length=200)
+    reference_image = models.ImageField(null=True)
+    data = HStoreField(null=True, blank=True)
+
+    @property
+    def total_inventory(self):
+        return Item.objects.filter(sku=self).count()
+
+
 class Item(models.Model):
     epc = models.CharField(max_length=48, primary_key=True)
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     display_name = models.CharField(max_length=200)
-    data = JSONField(null=True, blank=True)
+    data = HStoreField(null=True, blank=True)
+    sku = models.ForeignKey(SKU, null=True, on_delete=models.PROTECT)
+    in_transit = models.BooleanField(default=False)
+    image = models.ImageField(null=True)
 
     @property
     def age(self):

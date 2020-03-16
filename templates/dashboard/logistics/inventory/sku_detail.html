@@ -1,0 +1,65 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load django_tables2 %}
+{% load static %}
+{% block child %}
+<main class="c-main">
+    <div class="container-fluid">
+        <div class="fade-in">
+            <div class="row">
+                <div class="col-sm-12 col-md-8">
+                    <div class="card card-accent-info">
+                        <div class="card-header h3">{{sku_object.display_name}}</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <img src="{{ sku_object.reference_image.url }}" class="img-fluid"/>
+
+                                </div>
+                                <div class="col-8">
+                                    <table class="table table-responsive-sm table-bordered">
+                                    {% for key, values in sku_object.data.items %}
+                                        <tr>
+                                            <td>{{key}}</td>
+                                            <td>{{values}}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card card-accent-info">
+                        <div class="card-header h3">Top ubicaciones</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-10">BODEGA-134</div>
+                                <div class="col-2">10</div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-10">Almaviva Bogota</div>
+                                <div class="col-2">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-accent-info">
+                        <div class="card-header h3 mb-0">Unidades ({{ table.data | length }})</div>
+                        <div class="card-body p-0">
+                        {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row-->
+        </div>
+  </div>
+</main>
+{% endblock %}

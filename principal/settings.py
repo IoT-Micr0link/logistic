@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'rfid.apps.RfidConfig',
     'django_tables2'
 ]
@@ -139,6 +140,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+#STATIC_ROOT  = "static"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+# Media Files, and user uploads
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"

@@ -9,12 +9,20 @@
   </div>
   <ul class="c-sidebar-nav">
     <li class="c-sidebar-nav-title">Logística inversa</li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "logistica-inventory" %}'>
+
+    <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" href="#">
         <svg class="c-sidebar-nav-icon">
-            <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-blur"></use>
-        </svg> Inventario</a>
+        <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg'%}#cil-blur"></use>
+        </svg>Inventario</a>
+        <ul class="c-sidebar-nav-dropdown-items">
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-sku-inventory' %}"> Por referencia </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-item-inventory' %}"> Por Item </a></li>
+
+        </ul>
     </li>
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "logistica-transfer-order-list" %}'>
+
+
+    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "logistics-transfer-order-list" %}'>
         <svg class="c-sidebar-nav-icon">
             <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-truck"></use>
         </svg> Pedidos</a>
@@ -111,7 +119,7 @@
     {% block child %}{% endblock %}
   </div>
   <footer class="c-footer">
-    <div><a href="https://coreui.io">Microlink S.A.S </a> &copy; 2020</div>
+    <div><a href="https://www.microlink.com.co/">Microlink S.A.S </a> &copy; 2020</div>
     <div class="ml-auto">Powered by&nbsp;<a href="https://www.microlink.com.co/">Microlink SAS</a></div>
   </footer>
 </div>

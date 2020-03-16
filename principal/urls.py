@@ -17,17 +17,21 @@ from django.contrib import admin
 from django.urls import path
 from iot import views as iot_views
 from rfid import views as rfid_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', iot_views.DashboardView.as_view(), name='index'),
-    path('logistica/inventory/', rfid_views.ItemListView.as_view(), name='logistica-inventory'),
-    path('logistica/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistica-transfer-order-list'),
-    path('logistica/transfer-orders/<int:id_order>/detail',
-         rfid_views.TransferOrderDetailView.as_view(), name='logistica-transfer-order-detail'),
+    path('logistics/inventory/items/', rfid_views.ItemListView.as_view(), name='logistics-item-inventory'),
+    path('logistics/inventory/skus/', rfid_views.SKUListView.as_view(), name='logistics-sku-inventory'),
+    path('logistics/inventory/skus/<int:pk>/detail/', rfid_views.SKUDetailView.as_view(), name='logistics-sku-detail'),
+    path('logistics/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistics-transfer-order-list'),
+    path('logistics/transfer-orders/<int:id_order>/detail/',
+         rfid_views.TransferOrderDetailView.as_view(), name='logistics-transfer-order-detail'),
     path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-reader-list'),
     path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
-
-
 ]
 
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

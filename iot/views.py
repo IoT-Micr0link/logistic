@@ -3,7 +3,7 @@ from rfid.models import Item
 
 
 class DashboardView(generic.TemplateView):
-    template_name = 'dashboard/logistica/index_logistica.html'
+    template_name = 'dashboard/logistics/logistics_index.html'
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
