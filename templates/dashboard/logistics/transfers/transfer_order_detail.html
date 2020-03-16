@@ -7,9 +7,9 @@
         <div class="fade-in">
 
             <div class="row ow-eq-height">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header"><strong>Pedido {{order_object.pk}}</strong></div>
+                <div class="col-md-8">
+                    <div class="card card-accent-info">
+                        <div class="card-header h3"><strong>Pedido:  {{order_object.pk}}</strong></div>
                         <div class="card-body">
                             <div>
                                 <strong> Destino </strong> : {{order_object.destination }}
@@ -20,22 +20,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 h-100">
-                    <div class="card h-100">
+                <div class="col-md-4 h-100">
+                    <div class="card h-100 card-accent-info">
                         <div class="card-body">
-                            <div class="text-value-lg"><h2>{{enlisted_items_per}} %</h2></div><small class="text-muted text-uppercase font-weight-bold">Items Alistados ({{enlisted_items_count}})</small>
+                            <div class="text-value-lg"><h2>{{enlisted_items_per}} %</h2></div><small class="text-muted text-uppercase font-weight-bold"> Items alistados ({{enlisted_items_count}})</small>
                             <div class="progress progress-xs mt-3 mb-0">
                             <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: {{enlisted_items_per}}%" aria-valuenow="{{enlisted_items_per}}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 h-25">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="text-value-xl">{{completed_items_per}}%</div><small class="text-muted text-uppercase font-weight-bold">Items Entregados ({{completed_items_count}})</small>
-                            <div class="progress progress-xs mt-3 mb-0">
-                            <div class="progress-bar bg-gradient-success" role="progressbar" style="width: {{completed_items_per}}%" aria-valuenow="{{completed_items_per}}" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
@@ -45,8 +35,11 @@
             <!-- /.row-->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="card card-accent-info">
+                        <div class="card-header h4 mb-0">
+                        Items ({{items_count}})
+                        </div>
+                        <div class="card-body p-0">
                         {% render_table table %}
                         </div>
                     </div>

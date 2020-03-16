@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from datetime import date
 from django.contrib.postgres.fields import HStoreField
 
@@ -15,6 +14,7 @@ class Location(models.Model):
 class SKU(models.Model):
     display_name = models.CharField(max_length=200)
     reference_image = models.ImageField(null=True)
+    datasheet = models.FileField(null=True, blank=True)
     data = HStoreField(null=True, blank=True)
 
     @property
@@ -88,7 +88,7 @@ class Reading(models.Model):
 class TransferOrder(models.Model):
     STATE = (
         ('RE', 'Solicitado'),
-        ('IN', 'Incompleto'),
+        ('IP', 'En progreso'),
         ('CO', 'Completado')
     )
     destination = models.ForeignKey(Location, on_delete=models.PROTECT)
@@ -96,19 +96,52 @@ class TransferOrder(models.Model):
     actual_completion_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=3, choices=STATE ,default='RE')
 
+    def __str__(self):
+        return '{}-[{}]'.format(self.pk, self.state)
+
 
 class TransferOrderItem(models.Model):
     STATE = (
-        ('RE', 'Solicitado'),
-        ('AL', 'Alistado'),
+        ('RE',  'Solicitado'),
+        ('AL',  'Alistado'),
         ('NOE', 'No entregado'),
-        ('EN', 'Entregado')
+        ('EN',  'Entregado')
     )
     order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
     item = models.ForeignKey(Item, on_delete=models.PROTECT)
     state = models.CharField(max_length=3, choices=STATE, default='RE')
 
+    def __str__(self):
+        return '{}-[{}]'.format(self.item, self.state)
+
     class Meta:
         unique_together = ('order', 'item')
+
+
+class WarehouseEntry(models.Model):
+    entry_date = models.DateTimeField()
+    origin = models.ForeignKey(Location, on_delete=models.PROTECT)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='warehouse_entries')
+
+    @property
+    def total_items(self):
+        return WarehouseEntryItem.objects.filter(entry=self).count()
+
+    def __str__(self):
+        return '{}-[{}]'.format(self.pk, self.origin)
+
+
+class WarehouseEntryItem(models.Model):
+    entry = models.ForeignKey(WarehouseEntry,on_delete=models.PROTECT)
+    item = models.ForeignKey(Item, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '{}-[{}]'.format(self.entry, self.item.epc)
+
+    class Meta:
+        unique_together = ('entry', 'item')
+
+
+
 
 

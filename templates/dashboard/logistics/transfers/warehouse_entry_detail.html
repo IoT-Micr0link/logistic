@@ -1,0 +1,42 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load django_tables2 %}
+{% load static %}
+{% block child %}
+<main class="c-main">
+    <div class="container-fluid">
+        <div class="fade-in">
+
+            <div class="row ow-eq-height">
+                <div class="col-md-12">
+                    <div class="card card-accent-info">
+                        <div class="card-header"><strong>Entrada de bodega: {{entry_object.pk}}</strong></div>
+                        <div class="card-body">
+                            <div>
+                                <strong> Origen </strong> : {{entry_object.origin }}
+                            </div>
+                            <div>
+                                <strong> Fecha de recepcion </strong> : {{ entry_object.entry_date }}
+                            </div>
+                            <div>
+                                <strong> Bodega de recepcion </strong> : {{ entry_object.location }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /.row-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                        {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row-->
+        </div>
+  </div>
+</main>
+{% endblock %}

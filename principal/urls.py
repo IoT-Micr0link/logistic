@@ -29,6 +29,12 @@ urlpatterns = [
     path('logistics/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistics-transfer-order-list'),
     path('logistics/transfer-orders/<int:id_order>/detail/',
          rfid_views.TransferOrderDetailView.as_view(), name='logistics-transfer-order-detail'),
+
+    path('logistics/warehouse-entries/', rfid_views.WarehouseEntryListView.as_view(),
+         name='logistics-warehouse-entry-list'),
+    path('logistics/warehouse-entries/<int:id_entry>/detail/',
+         rfid_views.WarehouseEntryDetailView.as_view(), name='logistics-warehouse-entry-detail'),
+
     path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-reader-list'),
     path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
 ]

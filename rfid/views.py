@@ -95,7 +95,7 @@ class TransferOrderListView(SingleTableView):
         context = super(TransferOrderListView, self).get_context_data(**kwargs)
         context['total_orders'] = TransferOrder.objects.all().count()
         context['total_completed_orders'] = TransferOrder.objects.filter(state='CO').count()
-        context['total_incomplete_orders'] = TransferOrder.objects.filter(state='IN').count()
+        context['total_inprogress_orders'] = TransferOrder.objects.filter(state='IP').count()
         return context
 
 
@@ -108,16 +108,55 @@ class TransferOrderDetailView(SingleTableView):
     }
 
     def get_queryset(self):
-        qs = TransferOrderItem.objects.filter(order_id  =self.kwargs['id_order'])
+        qs = TransferOrderItem.objects.filter(order_id =self.kwargs['id_order'])
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(TransferOrderDetailView, self).get_context_data(**kwargs)
         context['order_object'] = TransferOrder.objects.filter(id=self.kwargs['id_order']).first()
-        context['enlisted_items_count'] = self.get_queryset().filter(state='AL').count()
-        context['completed_items_count'] = self.get_queryset().filter(state='EN').count()
-        context['items_count'] = self.get_queryset().count()
-        context['enlisted_items_per'] = context['enlisted_items_count'] * 100 / context['items_count']
-        context['completed_items_per'] = context['completed_items_count'] * 100 / context['items_count']
+        total_items_enlisted = self.get_queryset().filter(state='AL').count()
+        items_count = self.get_queryset().count()
+        enlisted_items_per = total_items_enlisted * 100 / items_count
+        
+        context['enlisted_items_count'] = total_items_enlisted
+        context['items_count'] = items_count
+        context['enlisted_items_per'] = enlisted_items_per
 
+
+        return context
+
+
+class WarehouseEntryListView(SingleTableView):
+    model = WarehouseEntry
+    template_name = 'dashboard/logistics/transfers/warehouse_entry_list.html'
+    table_class = WarehouseEntryTable
+    table_pagination = {
+        'per_page': 30
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super(WarehouseEntryListView, self).get_context_data(**kwargs)
+        context['total_items_year'] = WarehouseEntryItem.objects.count()
+        context['total_items_month'] = WarehouseEntryItem.objects.count()
+        context['total_items_today'] = WarehouseEntryItem.objects.count()
+
+        return context
+
+
+class WarehouseEntryDetailView(SingleTableView):
+    template_name = 'dashboard/logistics/transfers/warehouse_entry_detail.html'
+    model = WarehouseEntryItem
+    table_class = WarehouseEntryItemTable
+    table_pagination = {
+        'per_page': 15
+    }
+
+    def get_queryset(self):
+        qs = WarehouseEntryItem.objects.filter(entry_id=self.kwargs['id_entry'])
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(WarehouseEntryDetailView, self).get_context_data(**kwargs)
+        context['entry_object'] = WarehouseEntry.objects.filter(id=self.kwargs['id_entry']).first()
+        context['items_count'] = self.get_queryset().count()
         return context

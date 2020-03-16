@@ -43,24 +43,24 @@
                         <div class="card-body p-0 d-flex align-items-center">
                             <div class="bg-gradient-dark p-4 mfe-3">
                                 <svg class="c-icon c-icon-xl">
-                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-av-timer"></use>
+                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-folder"></use>
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-value text-info">{{average_age}} dias</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Edad promedio</div>
+                                <div class="text-value text-info">{{total_referencias}}</div>
+                                <div class="text-muted text-uppercase font-weight-bold small">Total referencias</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- /.col-->
             </div>
-
             <!-- /.row-->
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body p-0">
                         {% render_table table %}
                         </div>
                     </div>

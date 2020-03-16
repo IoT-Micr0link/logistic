@@ -7,13 +7,15 @@
         <img src="{% static 'assets/img/logo/microlink-white.png' %}" alt="" width="100%">
     </a>
   </div>
-  <ul class="c-sidebar-nav">
+  <ul class="c-sidebar-nav ps ps--active-y" data-dropdown-accordion="true">
     <li class="c-sidebar-nav-title">Logística inversa</li>
 
-    <li class="c-sidebar-nav-dropdown"><a class="c-sidebar-nav-dropdown-toggle" href="#">
-        <svg class="c-sidebar-nav-icon">
-        <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg'%}#cil-blur"></use>
-        </svg>Inventario</a>
+    <li class="c-sidebar-nav-dropdown">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <svg class="c-sidebar-nav-icon">
+            <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg'%}#cil-blur"></use>
+            </svg>Inventario
+        </a>
         <ul class="c-sidebar-nav-dropdown-items">
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-sku-inventory' %}"> Por referencia </a></li>
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-item-inventory' %}"> Por Item </a></li>
@@ -22,11 +24,21 @@
     </li>
 
 
-    <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "logistics-transfer-order-list" %}'>
-        <svg class="c-sidebar-nav-icon">
-            <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-truck"></use>
-        </svg> Pedidos</a>
+    <li class="c-sidebar-nav-dropdown">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <svg class="c-sidebar-nav-icon">
+                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-truck"></use>
+            </svg> Movimientos
+        </a>
+        <ul class="c-sidebar-nav-dropdown-items">
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-warehouse-entry-list' %}"> Entradas </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-transfer-order-list' %}"> Salidas </a></li>
+        </ul>
     </li>
+
+
+
+
     <li class="c-sidebar-nav-title">RFID</li>
     <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href='{% url "rfid-reader-list" %}'>
         <svg class="c-sidebar-nav-icon">

@@ -22,8 +22,14 @@
                                             <td>{{key}}</td>
                                             <td>{{values}}</td>
                                         </tr>
-
                                     {% endfor %}
+                                    {%if sku_object.datasheet %}
+                                        <tr>
+                                            <td>datasheet</td>
+                                            <td><a class="btn btn-outline-success" href="{{ sku_object.datasheet.url }}"
+                                                role="button" target="_blank">Descargar</a></td>
+                                        </tr>
+                                    {% endif%}
                                     </table>
                                 </div>
                             </div>
@@ -41,8 +47,13 @@
                             </div>
                             <hr>
                             <div class="row">
+                                <div class="col-10">BODEGA-133</div>
+                                <div class="col-2">3</div>
+                            </div>
+                            <hr>
+                            <div class="row">
                                 <div class="col-10">Almaviva Bogota</div>
-                                <div class="col-2">5</div>
+                                <div class="col-2">2</div>
                             </div>
                         </div>
                     </div>
