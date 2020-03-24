@@ -29,20 +29,20 @@ class SkuInventoryTable(TableBase):
         fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
 
 
-
 class ItemTable(TableBase):
     epc = tables.Column(accessor='epc', verbose_name="EPC")
-    display_name = tables.Column(accessor='display_name', verbose_name="Info")
+    display_name = tables.Column(accessor='display_name', verbose_name="Referencia")
     last_seen_timestamp = tables.Column(accessor='last_seen_timestamp', verbose_name="Última lectura")
-    last_seen_location = tables.Column(accessor='last_seen_location', verbose_name="Ubicación lectura")
-    in_transit = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/in_transit_cell.html",
-                                            orderable=False)
+    last_seen_location = tables.Column(accessor='last_seen_location', verbose_name="Bodega lectura")
+    last_seen_action = tables.Column(accessor='last_seen_action', verbose_name="Tipo de accion")
+    #in_transit = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/in_transit_cell.html",
+    #                                        orderable=False)
 
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location','in_transit')
-        fields = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location','in_transit')
+        sequence = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location', 'last_seen_action')
+        fields = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location', 'last_seen_action')
 
 
 class ReaderTable(TableBase):

@@ -27,9 +27,15 @@ class SKU(models.Model):
 
 
 class Item(models.Model):
+    ACTION = (
+        ('IN','Entrada'),
+        ('OUT','Salida'),
+        ('READ','Lectura')
+    )
     epc = models.CharField(max_length=48, primary_key=True)
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
+    last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
     display_name = models.CharField(max_length=200)
     data = HStoreField(null=True, blank=True)
     sku = models.ForeignKey(SKU, null=True, on_delete=models.PROTECT)
@@ -79,9 +85,9 @@ class ReaderAntenna(models.Model):
 
 class Reading(models.Model):
     ACTION = (
-        ('IN','Entry'),
-        ('OUT','Out'),
-        ('READ','Reading')
+        ('IN','Entrada'),
+        ('OUT','Salida'),
+        ('READ','Lectura')
     )
     id = models.BigAutoField(primary_key=True)
     epc = models.CharField(max_length=24)

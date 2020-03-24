@@ -3,6 +3,7 @@ from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.view_models import *
 from statistics import mean
+from rfid.filters import *
 
 
 class InventoryView(generic.TemplateView):
@@ -25,21 +26,26 @@ class ItemListView(SingleTableView):
         return context                                                              # a DB view or batch process
 
 
-class SKUDetailView(SingleTableMixin, generic.detail.DetailView ):
+class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
     model = SKU
     template_name = 'dashboard/logistics/inventory/sku_detail.html'
     context_object_name = "sku_object"
     table_class = ItemTable
+    filterset_class = ItemFilter
     table_pagination = {
         'per_page': 10
     }
 
     def get_table_data(self):
-        return Item.objects.filter(sku=self.object)
+        return self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object)).qs
 
     def get_context_data(self, **kwargs):
         context = super(SKUDetailView, self).get_context_data(**kwargs)
-        context['locations_inventory_list'] = InventorySummary.objects.filter(sku=self.object).select_related('last_seen_location')
+        filter = self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object))
+        context['location_id'] = self.request.GET.get('last_seen_location')
+        context['filter'] = filter
+        context['locations_inventory_list'] = InventorySummary.objects\
+                                                .filter(sku=self.object).select_related('last_seen_location')
         return context
 
 
