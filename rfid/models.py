@@ -140,6 +140,10 @@ class WarehouseEntry(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='warehouse_entries')
 
     @property
+    def total_skus(self):
+        return WarehouseEntryItem.objects.filter(entry=self).values('item__sku').distinct().count()
+
+    @property
     def total_items(self):
         return WarehouseEntryItem.objects.filter(entry=self).count()
 

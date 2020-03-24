@@ -148,8 +148,7 @@ class WarehouseEntryListView(SingleTableView):
 
     def get_context_data(self, **kwargs):
         context = super(WarehouseEntryListView, self).get_context_data(**kwargs)
-        context['total_items_year'] = WarehouseEntryItem.objects.count()
-        context['total_items_month'] = WarehouseEntryItem.objects.count()
+        context['total_sku_today'] = WarehouseEntryItem.objects.all().values('item__sku').distinct().count()
         context['total_items_today'] = WarehouseEntryItem.objects.count()
 
         return context

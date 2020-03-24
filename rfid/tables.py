@@ -29,6 +29,7 @@ class SkuInventoryTable(TableBase):
         fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
 
 
+
 class ItemTable(TableBase):
     epc = tables.Column(accessor='epc', verbose_name="EPC")
     display_name = tables.Column(accessor='display_name', verbose_name="Referencia")
@@ -85,14 +86,18 @@ class TransferOrderTable(TableBase):
 
 
 class TransferOrderItemTable(TableBase):
-    epc = tables.Column(accessor='item.epc', verbose_name="EPC")
-    item = tables.Column(accessor='item.display_name', verbose_name="Item")
+    sku = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
+    epc = tables.Column(accessor='item.epc', verbose_name="Serial")
+    count = tables.Column(empty_values=(), verbose_name="Cant")
     state = tables.Column(accessor='state', verbose_name="Estado")
 
     class Meta(TableBase.Meta):
         model = TransferOrderItem
-        sequence = ('epc', 'item', 'state', )
-        fields = ('epc', 'item', 'state', )
+        sequence = ('sku', 'epc', 'state', )
+        fields = ('sku', 'epc', 'state', )
+
+    def render_count(self):
+        return "1"
 
 
 class WarehouseEntryTable(TableBase):
@@ -112,10 +117,16 @@ class WarehouseEntryTable(TableBase):
 
 
 class WarehouseEntryItemTable(TableBase):
-    epc = tables.Column(accessor='item.epc', verbose_name="Epc")
-    item = tables.Column(accessor='item.display_name', verbose_name="Item info")
+    sku = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
+    epc = tables.Column(accessor='item.epc', verbose_name="Serial")
+    count = tables.Column(empty_values=(), verbose_name="Cant")
+    detail = tables.LinkColumn('logistics-sku-detail', text="ver detalle", verbose_name="Ver detalle",
+                                       args=[A('item__sku_id')])
 
     class Meta(TableBase.Meta):
         model = WarehouseEntryItem
-        sequence = ('epc','item' )
-        fields = ('epc', 'item' )
+        sequence = ('sku','epc','count','detail')
+        fields = ('sku','epc','count','detail')
+
+    def render_count(self):
+        return "1"
