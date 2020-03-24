@@ -41,4 +41,8 @@ class Migration(migrations.Migration):
                 'unique_together': {('entry', 'item')},
             },
         ),
+        migrations.RunSQL('create or replace view  inventory_summary as '
+                          'select row_number() OVER () as id, sku_id , last_seen_location_id, count(*) '
+                          'from rfid_item '
+                          'group by sku_id, last_seen_location_id ')
     ]

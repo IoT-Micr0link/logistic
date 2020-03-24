@@ -1,6 +1,7 @@
 from django.views import generic
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
+from rfid.view_models import *
 from statistics import mean
 
 
@@ -35,6 +36,11 @@ class SKUDetailView(SingleTableMixin, generic.detail.DetailView ):
 
     def get_table_data(self):
         return Item.objects.filter(sku=self.object)
+
+    def get_context_data(self, **kwargs):
+        context = super(SKUDetailView, self).get_context_data(**kwargs)
+        context['locations_inventory_list'] = InventorySummary.objects.filter(sku=self.object).select_related('last_seen_location')
+        return context
 
 
 class SKUListView(SingleTableView):
@@ -117,7 +123,7 @@ class TransferOrderDetailView(SingleTableView):
         total_items_enlisted = self.get_queryset().filter(state='AL').count()
         items_count = self.get_queryset().count()
         enlisted_items_per = total_items_enlisted * 100 / items_count
-        
+
         context['enlisted_items_count'] = total_items_enlisted
         context['items_count'] = items_count
         context['enlisted_items_per'] = enlisted_items_per

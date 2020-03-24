@@ -19,12 +19,15 @@ class TableBase(tables.Table):
 class SkuInventoryTable(TableBase):
     display_name = tables.Column(accessor='display_name', verbose_name="Descripción")
     total_inventory = tables.Column(accessor='total_inventory', verbose_name="Total inventario")
+    total_locations_inventory = tables.Column(accessor='total_locations_inventory', verbose_name="En cuantas bodegas")
     detail = tables.LinkColumn('logistics-sku-detail', text="ver detalle", verbose_name="Ver detalle",
                                        args=[A('id')])
 
+
     class Meta(TableBase.Meta):
         model = SKU
-        fields = ('id', 'display_name', 'total_inventory', 'detail')
+        fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
+
 
 
 class ItemTable(TableBase):

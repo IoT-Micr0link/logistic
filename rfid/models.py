@@ -21,6 +21,10 @@ class SKU(models.Model):
     def total_inventory(self):
         return Item.objects.filter(sku=self).count()
 
+    @property
+    def total_locations_inventory(self):
+        return Item.objects.filter(sku=self).values('last_seen_location__id').distinct().count()
+
 
 class Item(models.Model):
     epc = models.CharField(max_length=48, primary_key=True)
@@ -74,12 +78,18 @@ class ReaderAntenna(models.Model):
 
 
 class Reading(models.Model):
+    ACTION = (
+        ('IN','Entry'),
+        ('OUT','Out'),
+        ('READ','Reading')
+    )
     id = models.BigAutoField(primary_key=True)
     epc = models.CharField(max_length=24)
     node = models.ForeignKey(Node, on_delete=models.PROTECT)
     reader = models.ForeignKey(Reader, null=True, on_delete=models.PROTECT)
     antenna = models.ForeignKey(ReaderAntenna, null=True, on_delete=models.PROTECT)
     timestamp_reading = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=10, choices=ACTION, default='READ')
 
     def __str__(self):
         return '{}-[{}]'.format(self.epc, self.reader)

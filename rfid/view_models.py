@@ -1,0 +1,20 @@
+from django.db import models
+from rfid.models import  SKU, Location
+
+# These models are intended for database views
+
+
+class InventorySummary(models.Model):
+    sku = models.ForeignKey(SKU, on_delete=models.DO_NOTHING)
+    last_seen_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    count = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'inventory_summary'
+
+    def save(self, *args, **kwargs):
+        return
+
+    def delete(self, *args, **kwargs):
+        return
