@@ -99,15 +99,22 @@ class TransferOrderListView(SingleTableView):
     model = TransferOrder
     template_name = 'dashboard/logistics/transfers/transfer_order_list.html'
     table_class = TransferOrderTable
+    filterset_class = TransferOrderFilter
     table_pagination = {
         'per_page': 30
     }
+
+    def get_table_data(self):
+        return self.filterset_class(self.request.GET, queryset=TransferOrder.objects.all()).qs
 
     def get_context_data(self, **kwargs):
         context = super(TransferOrderListView, self).get_context_data(**kwargs)
         context['total_orders'] = TransferOrder.objects.all().count()
         context['total_completed_orders'] = TransferOrder.objects.filter(state='CO').count()
         context['total_inprogress_orders'] = TransferOrder.objects.filter(state='IP').count()
+
+        filter = self.filterset_class(self.request.GET, queryset=TransferOrder.objects.all())
+        context['filter'] = filter
         return context
 
 
@@ -142,14 +149,20 @@ class WarehouseEntryListView(SingleTableView):
     model = WarehouseEntry
     template_name = 'dashboard/logistics/transfers/warehouse_entry_list.html'
     table_class = WarehouseEntryTable
+    filterset_class = WarehouseEntryFilter
     table_pagination = {
         'per_page': 30
     }
+
+    def get_table_data(self):
+        return self.filterset_class(self.request.GET, queryset=WarehouseEntry.objects.all()).qs
 
     def get_context_data(self, **kwargs):
         context = super(WarehouseEntryListView, self).get_context_data(**kwargs)
         context['total_sku_today'] = WarehouseEntryItem.objects.all().values('item__sku').distinct().count()
         context['total_items_today'] = WarehouseEntryItem.objects.count()
+        filter = self.filterset_class(self.request.GET, queryset=WarehouseEntry.objects.all())
+        context['filter'] = filter
 
         return context
 
@@ -171,3 +184,4 @@ class WarehouseEntryDetailView(SingleTableView):
         context['entry_object'] = WarehouseEntry.objects.filter(id=self.kwargs['id_entry']).first()
         context['items_count'] = self.get_queryset().count()
         return context
+

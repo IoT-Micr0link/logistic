@@ -2,6 +2,7 @@
 {% load django_tables2 %}
 {% load static %}
 {% block child %}
+{% load widget_tweaks %}
 <main class="c-main">
     <div class="container-fluid">
         <div class="fade-in">
@@ -43,6 +44,22 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
+                        {% if filter  %}
+                        <div class="card-body">
+                            <form action="" method="get" class="form form-inline">
+                                <div class="form-group mx-4">
+                                    <label for="id_location" class="mr-2">Bodega origen</label>
+                                     {{ filter.form.origin|add_class:"form-control info" }}
+                                </div>
+                                 <div class="form-group mx-4">
+                                    <label for="id_origin" class="mr-2">Bodega Recepción</label>
+                                     {{ filter.form.location|add_class:"form-control info" }}
+                                </div>
+
+                               <input class="btn btn-info" type="submit" value="Filtrar"/>
+                            </form>
+                        </div>
+                       {% endif %}
                         <div class="card-body p-0">
                         {% render_table table %}
                         </div>

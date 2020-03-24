@@ -1,6 +1,6 @@
 from django_filters import  FilterSet, filters
 
-from rfid.models import Item
+from rfid.models import Item, WarehouseEntry, TransferOrder
 
 
 class ItemFilter(FilterSet):
@@ -10,3 +10,15 @@ class ItemFilter(FilterSet):
     class Meta:
         model = Item
         fields = ('sku', 'last_seen_location', 'last_seen_action')
+
+
+class WarehouseEntryFilter(FilterSet):
+    class Meta:
+        model=WarehouseEntry
+        fields = ('location', 'origin')
+
+
+class TransferOrderFilter(FilterSet):
+    class Meta:
+        model = TransferOrder
+        fields = ('destination', )

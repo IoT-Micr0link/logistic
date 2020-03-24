@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'rfid.apps.RfidConfig',
-    'django_tables2'
+    'django_tables2',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
