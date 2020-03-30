@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from rfid.models import *
+from rfid.view_models import *
 from django_tables2.utils import A
 
 
@@ -23,31 +23,40 @@ class SkuInventoryTable(TableBase):
     detail = tables.LinkColumn('logistics-sku-detail', text="ver detalle", verbose_name="Ver detalle",
                                        args=[A('id')])
 
-
     class Meta(TableBase.Meta):
         model = SKU
         fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
 
 
+class ItemSnapshotTable(TableBase):
+    serial = tables.Column(accessor='epc', verbose_name="Serial")
+
+    class Meta(TableBase.Meta):
+        fields = ('serial',)
+        model = LastReadingsSnapshot
+
 
 class ItemTable(TableBase):
-    epc = tables.Column(accessor='epc', verbose_name="EPC")
-    display_name = tables.Column(accessor='display_name', verbose_name="Referencia")
-    last_seen_timestamp = tables.Column(accessor='last_seen_timestamp', verbose_name="Última lectura")
-    last_seen_location = tables.Column(accessor='last_seen_location', verbose_name="Bodega lectura")
-    last_seen_action = tables.Column(accessor='last_seen_action', verbose_name="Tipo de accion")
+    serial = tables.Column(accessor='epc', verbose_name="Serial")
+    reference = tables.Column(accessor='sku.display_name', verbose_name="Referencia")
+    description = tables.Column(accessor='display_name', verbose_name="Descripción")
+    last_seen_location = tables.Column(accessor='last_seen_location', verbose_name="Bodega")
     #in_transit = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/in_transit_cell.html",
     #                                        orderable=False)
-
+    count = tables.Column(empty_values=(), verbose_name="Cant")
+    packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location', 'last_seen_action')
-        fields = ('epc', 'display_name', 'last_seen_timestamp', 'last_seen_location', 'last_seen_action')
+        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit','last_seen_location' )
+        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'last_seen_location' )
+
+    def render_count(self):
+        return "1"
 
 
 class ReaderTable(TableBase):
-    name = tables.Column(accessor='name', verbose_name="Descripcion")
+    name = tables.Column(accessor='name', verbose_name="Descripción")
     serial_number = tables.Column(accessor='serial_number', verbose_name="# Serial")
     brand = tables.Column(accessor='brand', verbose_name="Marca")
 
@@ -71,43 +80,49 @@ class ReadingsTable(TableBase):
 
 
 class TransferOrderTable(TableBase):
-    id = tables.Column(accessor='id', verbose_name="ID")
+    id = tables.Column(accessor='id', verbose_name="Número pedido ")
     destination = tables.Column(accessor='destination', verbose_name="Destino")
-    expected_completion_date = tables.Column(accessor='expected_completion_date', verbose_name="Fecha esperada de entrega")
-    actual_completion_date = tables.Column(accessor='actual_completion_date', verbose_name="Fecha real de entrega ")
+    actual_completion_date = tables.Column(accessor='actual_completion_date', verbose_name="Fecha de entrega ")
     state = tables.Column(accessor='state', verbose_name="Estado")
+    total_items = tables.Column(accessor='total_items', verbose_name="Total Items")
     detalle = tables.LinkColumn('logistics-transfer-order-detail', text="ver detalle",
                                        args=[A('id')])
 
     class Meta(TableBase.Meta):
         model = TransferOrder
-        sequence = ('id', 'destination', 'expected_completion_date', 'actual_completion_date', 'state')
-        fields = ('id', 'destination', 'expected_completion_date', 'actual_completion_date', 'state')
+        sequence = ('id', 'destination', 'actual_completion_date', 'state', 'total_items')
+        fields = ('id', 'destination', 'actual_completion_date', 'state', 'total_items')
 
 
 class TransferOrderItemTable(TableBase):
-    sku = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
-    epc = tables.Column(accessor='item.epc', verbose_name="Serial")
+
+    reference = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
+    description = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
+                                        ,verbose_name="Descripción")
+    epc = tables.Column(accessor="item.epc", verbose_name="Serial")
     count = tables.Column(empty_values=(), verbose_name="Cant")
-    state = tables.Column(accessor='state', verbose_name="Estado")
+    state = tables.Column(accessor="state", verbose_name="Estado")
+    packing_unit = tables.Column(accessor="item.packing_unit", verbose_name="Unidad")
+    fecha_ultimo_registro = tables.Column(accessor="last_out_reading.timestamp_reading",
+                                          verbose_name="Fecha lectura")
 
     class Meta(TableBase.Meta):
         model = TransferOrderItem
-        sequence = ('sku', 'epc', 'state', )
-        fields = ('sku', 'epc', 'state', )
+        sequence = ('reference', 'description', 'epc', 'state', 'count','packing_unit','fecha_ultimo_registro')
+        fields = ('reference','description', 'epc', 'state', 'count','packing_unit','fecha_ultimo_registro')
 
     def render_count(self):
         return "1"
 
 
 class WarehouseEntryTable(TableBase):
-    id = tables.Column(accessor='id', verbose_name="ID")
-    origin = tables.Column(accessor='origin', verbose_name="Origen")
-    location = tables.Column(accessor='location', verbose_name="Bodega de recepción")
-    entry_date = tables.Column(accessor='entry_date', verbose_name="Fecha de recepción")
-    total_items = tables.Column(accessor='total_items', verbose_name="Total Items")
+    id = tables.Column(accessor="id", verbose_name="Id entrada")
+    origin = tables.Column(accessor="origin", verbose_name="Origen")
+    location = tables.Column(accessor="location", verbose_name="Bodega de recepción")
+    entry_date = tables.Column(accessor="entry_date", verbose_name="Fecha de recepción")
+    total_items = tables.Column(accessor="total_items", verbose_name="Total Items")
 
-    detail = tables.LinkColumn('logistics-warehouse-entry-detail', text="ver detalle",
+    detail = tables.LinkColumn("logistics-warehouse-entry-detail", text="ver detalle",
                                        args=[A('id')])
 
     class Meta(TableBase.Meta):
@@ -117,16 +132,31 @@ class WarehouseEntryTable(TableBase):
 
 
 class WarehouseEntryItemTable(TableBase):
-    sku = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
+
+    reference = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
+    description = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
+                                        ,verbose_name="Descripción")
     epc = tables.Column(accessor='item.epc', verbose_name="Serial")
     count = tables.Column(empty_values=(), verbose_name="Cant")
-    detail = tables.LinkColumn('logistics-sku-detail', text="ver detalle", verbose_name="Ver detalle",
-                                       args=[A('item__sku_id')])
+    packing_unit = tables.Column(accessor='item.packing_unit', verbose_name="Unidad")
 
     class Meta(TableBase.Meta):
         model = WarehouseEntryItem
-        sequence = ('sku','epc','count','detail')
-        fields = ('sku','epc','count','detail')
+        sequence = ('reference','description','epc','count', 'packing_unit')
+        fields = ('reference','description','epc','count', 'packing_unit')
 
     def render_count(self):
         return "1"
+
+
+##Tables for reports
+
+class InventoryReportLineTable(TableBase):
+    reference = tables.Column(accessor='reference', verbose_name='Referencia')
+    description = tables.Column(accessor='description', verbose_name='Descripción')
+    packing_unit = tables.Column(accessor='packing_unit', verbose_name='Und')
+
+    class Meta(TableBase.Meta):
+        model = InventoryReportLine
+        exclude = ('id','report')
+

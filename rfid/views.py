@@ -2,28 +2,52 @@ from django.views import generic
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.view_models import *
-from statistics import mean
 from rfid.filters import *
-
+from rfid.forms import *
+import datetime
 
 class InventoryView(generic.TemplateView):
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
 
 
-class ItemListView(SingleTableView):
-    model = Item
+class ItemInventoryView(SingleTableView):
+    model = InventoryReportLine
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
-    table_class = ItemTable
+    table_class = InventoryReportLineTable
     table_pagination = {
         'per_page': 30
     }
 
+    def get_queryset(self):
+        report = InventoryReport.objects.all().order_by('-created').first()
+        qs = InventoryReportLine.objects.filter(report=report)
+        return qs
+
     def get_context_data(self, **kwargs):
-        context = super(ItemListView, self).get_context_data(**kwargs)
-        context['total_items'] = Item.objects.all().count()
-        context['total_locations'] = Location.objects.all().count()
-        context['average_age'] = mean([item.age for item in Item.objects.all()])    # this is not efficent, it should be
-        return context                                                              # a DB view or batch process
+        context = super(ItemInventoryView, self).get_context_data(**kwargs)
+        form = InventoryRequestForm(self.request.POST or None)
+        context["form"] = form
+        return context
+
+
+class LocationInventoryView(SingleTableView):
+    model = InventoryReportLine
+    template_name = 'dashboard/logistics/inventory/inventory_by_location.html'
+    table_class = InventoryReportLineTable
+    table_pagination = {
+        'per_page': 30
+    }
+
+    def get_queryset(self):
+        report = InventoryReport.objects.all().order_by('-created').first()
+        qs = InventoryReportLine.objects.filter(report=report)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(LocationInventoryView, self).get_context_data(**kwargs)
+        form = InventoryRequestForm(self.request.POST or None)
+        context["form"] = form
+        return context
 
 
 class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
@@ -61,6 +85,7 @@ class SKUListView(SingleTableView):
         context = super(SKUListView, self).get_context_data(**kwargs)
         context['total_items'] = Item.objects.all().count()
         context['total_locations'] = Location.objects.all().count()
+        context['total_locations_in_use'] = Item.objects.all().values('last_seen_location__id').distinct().count()
         context['total_referencias'] = SKU.objects.count()
         return context
 

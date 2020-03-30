@@ -23,7 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', iot_views.DashboardView.as_view(), name='index'),
-    path('logistics/inventory/items/', rfid_views.ItemListView.as_view(), name='logistics-item-inventory'),
+    path('logistics/inventory/items-inventory-sku/', rfid_views.ItemInventoryView.as_view(), name='logistics-item-inventory-sku'),
+    path('logistics/inventory/items-inventory-location/', rfid_views.LocationInventoryView.as_view(), name='logistics-item-inventory-location'),
+
     path('logistics/inventory/skus/', rfid_views.SKUListView.as_view(), name='logistics-sku-inventory'),
     path('logistics/inventory/skus/<int:pk>/detail/', rfid_views.SKUDetailView.as_view(), name='logistics-sku-detail'),
     path('logistics/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistics-transfer-order-list'),

@@ -47,16 +47,29 @@
                         {% if filter  %}
                         <div class="card-body">
                             <form action="" method="get" class="form form-inline">
-                                <div class="form-group mx-4">
-                                    <label for="id_location" class="mr-2">Bodega origen</label>
-                                     {{ filter.form.origin|add_class:"form-control info" }}
-                                </div>
-                                 <div class="form-group mx-4">
-                                    <label for="id_origin" class="mr-2">Bodega Recepción</label>
-                                     {{ filter.form.location|add_class:"form-control info" }}
-                                </div>
 
-                               <input class="btn btn-info" type="submit" value="Filtrar"/>
+                                <div class="col-12">
+                                    <div class="form-group mx-4 mb-2 d-inline-block">
+                                        <label for="id_entry_date_min" class="mr-2">Desde</label>
+                                        <input type="date" name="entry_date_min"  id="id_entry_date_min" class="form-control">
+                                    </div>
+
+                                    <div class="form-group mx-4 mb-2 d-inline-block">
+                                        <label for="id_entry_date_max" class="mr-2">Hasta</label>
+                                        <input type="date" name="entry_date_max"  id="id_entry_date_max" class="form-control">
+                                    </div>
+                                    <div class="form-group mx-4 d-inline-block">
+                                        <label for="id_location" class="mr-2">Bodega origen</label>
+                                         {{ filter.form.origin|add_class:"form-control info" }}
+                                    </div>
+                                    <div class="form-group mx-4 d-inline-block">
+                                        <label for="id_origin" class="mr-2">Bodega Recepción</label>
+                                         {{ filter.form.location|add_class:"form-control info" }}
+                                    </div>
+                                    <div class="form-group mx-4 d-inline-block">
+                                        <input class="btn btn-info" type="submit" value="Filtrar"/>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                        {% endif %}

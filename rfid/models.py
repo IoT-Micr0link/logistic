@@ -17,6 +17,9 @@ class SKU(models.Model):
     datasheet = models.FileField(null=True, blank=True)
     data = HStoreField(null=True, blank=True)
 
+    def __str__(self):
+        return self.display_name
+
     @property
     def total_inventory(self):
         return Item.objects.filter(sku=self).count()
@@ -26,13 +29,21 @@ class SKU(models.Model):
         return Item.objects.filter(sku=self).values('last_seen_location__id').distinct().count()
 
 
+class PackingUnit(models.Model):
+    name = models.CharField(max_length=10)
+    description = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Item(models.Model):
     ACTION = (
         ('IN','Entrada'),
         ('OUT','Salida'),
         ('READ','Lectura')
     )
-    epc = models.CharField(max_length=48, primary_key=True)
+    epc = models.CharField(max_length=150, primary_key=True)
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
@@ -41,6 +52,7 @@ class Item(models.Model):
     sku = models.ForeignKey(SKU, null=True, on_delete=models.PROTECT)
     in_transit = models.BooleanField(default=False)
     image = models.ImageField(null=True)
+    packing_unit = models.ForeignKey(PackingUnit, null=True, blank=True, on_delete=models.PROTECT)
 
     @property
     def age(self):
@@ -90,7 +102,7 @@ class Reading(models.Model):
         ('READ','Lectura')
     )
     id = models.BigAutoField(primary_key=True)
-    epc = models.CharField(max_length=24)
+    epc = models.CharField(max_length=150)
     node = models.ForeignKey(Node, on_delete=models.PROTECT)
     reader = models.ForeignKey(Reader, null=True, on_delete=models.PROTECT)
     antenna = models.ForeignKey(ReaderAntenna, null=True, on_delete=models.PROTECT)
@@ -104,8 +116,9 @@ class Reading(models.Model):
 class TransferOrder(models.Model):
     STATE = (
         ('RE', 'Solicitado'),
-        ('IP', 'En progreso'),
-        ('CO', 'Completado')
+        ('IP', 'En Alistamiento'),
+        ('IT', 'En Tránsito'),
+        ('CO', 'Entregado')
     )
     destination = models.ForeignKey(Location, on_delete=models.PROTECT)
     expected_completion_date = models.DateField(null=True, blank=True)
@@ -115,10 +128,18 @@ class TransferOrder(models.Model):
     def __str__(self):
         return '{}-[{}]'.format(self.pk, self.state)
 
+    @property
+    def total_skus(self):
+        return TransferOrderItem.objects.filter(order=self).values('item__sku').distinct().count()
+
+    @property
+    def total_items(self):
+        return TransferOrderItem.objects.filter(order=self).count()
+
 
 class TransferOrderItem(models.Model):
     STATE = (
-        ('RE',  'Solicitado'),
+        ('RE',  'Por alistar'),
         ('AL',  'Alistado'),
         ('NOE', 'No entregado'),
         ('EN',  'Entregado')
@@ -130,8 +151,19 @@ class TransferOrderItem(models.Model):
     def __str__(self):
         return '{}-[{}]'.format(self.item, self.state)
 
+    @property
+    def last_out_reading(self):
+        return Reading.objects.filter(epc=self.item.epc, action='OUT').order_by('-timestamp_reading').first()
+
     class Meta:
         unique_together = ('order', 'item')
+
+
+class TransferOrderTrancking(models.Model):
+    order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
+    timestamp_reading = models.DateTimeField(auto_now_add=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=7)
+    longitude = models.DecimalField(max_digits=10, decimal_places=7)
 
 
 class WarehouseEntry(models.Model):
@@ -162,6 +194,30 @@ class WarehouseEntryItem(models.Model):
         unique_together = ('entry', 'item')
 
 
+###Reports
+
+class InventoryRequest(models.Model):
+    start_date = models.DateTimeField(auto_now_add=True)
+    finish_date = models.DateTimeField(null=True, blank=True)
+    wait_minutes = models.PositiveIntegerField(default=10)
+    init_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_init')
+    end_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_end')
+    init_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_init')
+    end_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_end')
+    all_locations = models.BooleanField(default=False)
+    all_skus = models.BooleanField(default=False)
 
 
+class InventoryReport(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    inventory_request = models.ForeignKey(InventoryRequest, on_delete=models.PROTECT, null=True)
+    finish_date = models.DateTimeField(null=True, blank=True)
+    location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.CASCADE)
 
+
+class InventoryReportLine(models.Model):
+    report = models.ForeignKey(InventoryReport, on_delete=models.CASCADE)
+    reference = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
+    cant = models.IntegerField()
+    packing_unit = models.CharField(max_length=200)
