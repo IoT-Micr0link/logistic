@@ -28,12 +28,15 @@ class SkuInventoryTable(TableBase):
         fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
 
 
-class ItemSnapshotTable(TableBase):
-    serial = tables.Column(accessor='epc', verbose_name="Serial")
+class InventorySummaryTable(TableBase):
+    reference = tables.Column(accessor='sku', verbose_name="Referencia")
+    last_seen_location = tables.Column(accessor='last_seen_location', verbose_name="Bodega")
+    packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
+    count = tables.Column(accessor='count', verbose_name="Cant")
 
     class Meta(TableBase.Meta):
-        fields = ('serial',)
-        model = LastReadingsSnapshot
+        model = InventorySummary
+        fields = ('reference','last_seen_location','count','packing_unit')
 
 
 class ItemTable(TableBase):

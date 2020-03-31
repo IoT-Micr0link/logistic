@@ -1,53 +1,58 @@
 from django.views import generic
+from dal import autocomplete
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
-from rfid.view_models import *
 from rfid.filters import *
 from rfid.forms import *
-import datetime
+
 
 class InventoryView(generic.TemplateView):
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
 
 
 class ItemInventoryView(SingleTableView):
-    model = InventoryReportLine
+    model = InventorySummary
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
-    table_class = InventoryReportLineTable
+    table_class = InventorySummaryTable
+    filterset_class = InventorySummaryFilter
+    filterset_form = InvetorySummaryFilterForm
     table_pagination = {
         'per_page': 30
     }
 
-    def get_queryset(self):
-        report = InventoryReport.objects.all().order_by('-created').first()
-        qs = InventoryReportLine.objects.filter(report=report)
-        return qs
+    def get_table_data(self):
+        return self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all()).qs
 
     def get_context_data(self, **kwargs):
         context = super(ItemInventoryView, self).get_context_data(**kwargs)
-        form = InventoryRequestForm(self.request.POST or None)
+        form = self.filterset_form(self.request.GET or None)
+        filter = self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all())
         context["form"] = form
+        context["filter"] = filter
         return context
 
 
 class LocationInventoryView(SingleTableView):
-    model = InventoryReportLine
+    model = InventorySummary
     template_name = 'dashboard/logistics/inventory/inventory_by_location.html'
-    table_class = InventoryReportLineTable
+    table_class = InventorySummaryTable
+    filterset_class = InventorySummaryFilter
+    filterset_form = InvetorySummaryFilterForm
     table_pagination = {
         'per_page': 30
     }
 
-    def get_queryset(self):
-        report = InventoryReport.objects.all().order_by('-created').first()
-        qs = InventoryReportLine.objects.filter(report=report)
-        return qs
+    def get_table_data(self):
+        return self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all()).qs
 
     def get_context_data(self, **kwargs):
         context = super(LocationInventoryView, self).get_context_data(**kwargs)
-        form = InventoryRequestForm(self.request.POST or None)
+        form = self.filterset_form(self.request.GET or None)
+        filter = self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all())
         context["form"] = form
+        context["filter"] = filter
         return context
+
 
 
 class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
@@ -210,3 +215,18 @@ class WarehouseEntryDetailView(SingleTableView):
         context['items_count'] = self.get_queryset().count()
         return context
 
+
+class SKUAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = SKU.objects.all()
+        if self.q:
+            qs = qs.filter(display_name__istartswith=self.q)
+        return qs
+
+
+class LocationAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Location.objects.all()
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs

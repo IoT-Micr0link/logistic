@@ -9,40 +9,34 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header bg-dark text-white font-weight-bold"> Ejecutar Inventario</div>
-                        <div class="card-body">
-                            <form action="" method="get">
-                                <div class="w-100">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            {{ form.wait_minutes.errors }}
-                                            <label>{{ form.wait_minutes.label_tag }}
-                                            </label>
-                                            {{ form.wait_minutes | add_class:"form-control" }}
+                        <div class="card-header bg-dark text-white font-weight-bold"> Filtrar Inventario</div>
+                        {% if filter  %}
+                           <div class="card-body">
+                                <form action="" method="get">
+                                    <div class="w-100">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>{{ form.sku_id_from.label_tag }}
+                                                </label><br>
+                                                {{ form.sku_id_from  }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>{{ form.sku_id_to.label_tag }}
+                                                </label><br>
+                                                {{ form.sku_id_to }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>{{ form.location_id.label_tag }}
+                                                </label><br>
+                                                {{ form.location_id }}
+                                            </div>
+
                                         </div>
-                                        <div class="col-md-4">
-                                            {{ form.init_sku.errors }}
-                                            <label>{{ form.init_sku.label_tag }}
-                                            </label>
-                                            {{ form.init_sku | add_class:"form-control" }}
-                                        </div>
-                                        <div class="col-md-4">
-                                            {{ form.end_sku.errors }}
-                                            <label>{{ form.end_sku.label_tag }}
-                                            </label>
-                                            {{ form.end_sku | add_class:"form-control" }}
-                                        </div>
-                                        <div class="col-md-2">
-                                            {{ form.all_skus.errors }}
-                                            <label>{{ form.all_skus.label_tag }}
-                                            </label>
-                                            {{ form.all_skus | add_class:"form-control" }}
-                                        </div>
+                                        <div class="text-center mt-3"><input type="submit" class="btn btn-success" value="Filtrar"></div>
                                     </div>
-                                    <div class="text-center mt-3"><input type="submit" class="btn btn-success" value="Ejecutar"></div>
-                                </div>
-                            </form>
-                        </div>
+                                </form>
+                           </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -57,4 +51,11 @@
         </div>
   </div>
 </main>
+
+{% endblock %}
+
+{% block load_after %}
+
+{{ form.media }}
+
 {% endblock %}

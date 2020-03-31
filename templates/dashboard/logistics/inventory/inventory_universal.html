@@ -9,26 +9,26 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header bg-dark text-white font-weight-bold"> Filtrar Inventario</div>
+                        <div class="card-header bg-dark text-white font-weight-bold"> Ejecutar Inventario</div>
                         {% if filter  %}
                            <div class="card-body">
                                 <form action="" method="get">
                                     <div class="w-100">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <label>{{ form.location_id_from.label_tag }}
+                                                <label>{{ form.sku_id_from.label_tag }}
                                                 </label><br>
-                                                {{ form.location_id_from  }}
+                                                {{ form.sku_id_from  }}
                                             </div>
                                             <div class="col-md-4">
-                                                <label>{{ form.location_id_to.label_tag }}
+                                                <label>{{ form.sku_id_to.label_tag }}
                                                 </label><br>
-                                                {{ form.location_id_to }}
+                                                {{ form.sku_id_to }}
                                             </div>
                                             <div class="col-md-4">
-                                                <label>{{ form.sku_id.label_tag }}
+                                                <label>{{ form.location_id.label_tag }}
                                                 </label><br>
-                                                {{ form.sku_id }}
+                                                {{ form.location_id }}
                                             </div>
 
                                         </div>

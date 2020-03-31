@@ -39,6 +39,11 @@ urlpatterns = [
 
     path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-reader-list'),
     path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
+
+    #Autocomplete
+    path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),
+    path('autocomplete/locations/', rfid_views.LocationAutocomplete.as_view(), name='location-autocomplete'),
+
 ]
 
 if settings.DEBUG:

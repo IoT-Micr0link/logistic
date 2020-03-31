@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunSQL('create or replace view  inventory_summary as '
-                          'select row_number() OVER () as id, sku_id , last_seen_location_id, count(*) '
+                          'select row_number() OVER () as id, sku_id , last_seen_location_id, packing_unit_id, count(*) '
                           'from rfid_item '
-                          'group by sku_id, last_seen_location_id ')
+                          'group by sku_id, packing_unit_id, last_seen_location_id;')
     ]
