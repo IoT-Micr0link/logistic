@@ -1,5 +1,4 @@
 from django.views import generic
-from dal import autocomplete
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.filters import *
@@ -215,6 +214,13 @@ class WarehouseEntryDetailView(SingleTableView):
         context['items_count'] = self.get_queryset().count()
         return context
 
+
+class TrackingTransfersView(generic.TemplateView):
+    template_name = 'dashboard/logistics/tracking/tracking_transfer_orders.html'
+
+
+
+#Autocompletes
 
 class SKUAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
