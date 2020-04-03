@@ -3,7 +3,7 @@ from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.filters import *
 from rfid.forms import *
-
+from django.db.models import Count
 
 class InventoryView(generic.TemplateView):
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
@@ -219,9 +219,17 @@ class TrackingTransfersView(generic.TemplateView):
     template_name = 'dashboard/logistics/tracking/tracking_transfer_orders.html'
 
 
+class TrackingWarehouseView(generic.TemplateView):
+    template_name = 'dashboard/logistics/tracking/tracking_warehouse.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TrackingWarehouseView, self).get_context_data(**kwargs)
+        context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.all().values('antenna', 'antenna__name')\
+            .annotate(total=Count('antenna')).order_by('total')
+        return context
+
 
 #Autocompletes
-
 class SKUAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = SKU.objects.all()

@@ -1,0 +1,135 @@
+{% extends "dashboard/dashboard_base.html" %}
+{% load django_tables2 %}
+{% load static %}
+{% block child %}
+<main class="c-main">
+    <div class="container-fluid">
+        <div class="fade-in">
+
+            <div style="width: 700px" class="d-inline-block mr-4">
+                <div class="card card-accent-info">
+                    <div class="card-header h4 mb-0">Tracking bodega</div>
+                    <div class="card-body " >
+                        <div id="canvas-container">
+                           <canvas id="canvas" height="500px" width="650px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="width: calc(100% - 750px)" class="d-inline-block">
+                <div class="card card-accent-info">
+                    <div class="card-header  h4 mb-0">Resumen</div>
+                    <div class="card-body p-0" >
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="border-0 pt-0">Nombre</th>
+                                    <th class="border-0 pt-0">Cantidad</th>
+                                </tr>
+                            </thead>
+                        {%for row in reading_summary_snapshot %}
+                            <tbody>
+                                <tr>
+                                    <td>{{row.antenna__name}}</td>
+                                    <td id="totalId{{row.antenna}}">{{row.total}}</td>
+                                </tr>
+                            </tbody>
+                        {%endfor%}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+</main>
+{% endblock %}
+{% block load_after %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.2/fabric.js"></script>
+<script>
+
+let canvas = new fabric.Canvas('canvas');
+
+fabric.Image.fromURL('{% static "assets/img/backgrounds/bg.jpg" %}', function(img){
+   img.scaleToWidth(canvas.width);
+   img.scaleToHeight(canvas.height);
+   canvas.setBackgroundImage(img);
+   canvas.requestRenderAll();
+});
+
+function paintInitialPolygons(){
+  polys = {
+      zones : [
+          {
+              name:1,
+              points:[{x: 21, y: 433},{x: 121, y: 327},{x: 300, y: 334},{x: 257, y: 452}]
+          },
+          {
+              name:2,
+              points:[{x: 193, y: 241},{x: 148, y: 284},{x: 258, y: 303},{x: 306, y: 292},{x: 307, y: 180},{x: 263, y: 176},{x: 263, y: 243}]
+          },
+      ]
+  }
+
+
+  polyColors =["rgba(21,232,91,0.1)","rgba(255,0,10,0.1)"]
+  polyStrokeColors =["rgba(21,232,91,1)","rgb(255,7,7)"]
+
+  texts = ["0 tags", "0 tags"]
+  texts_loc = [{x: 170, y: 390},{x: 253, y: 271}]
+
+
+  for (var i = 0; polys.zones.length > i; i++){
+
+    window["polygon_" + polys.zones[i].name] = new fabric.Polygon(polys.zones[i].points, { //creates the actual polygon
+      fill: polyColors[i],
+      PolygonNumber: i,
+      name: "Polygon",
+      selectable: false,
+      objectCaching: false,
+      stroke: polyStrokeColors[i],
+    });
+
+    window["zoneRFID" + polys.zones[i].name] = new fabric.Text(texts[i], {
+        fontFamily: 'Arial',
+        fontSize: 30,
+        textAlign: 'center',
+        originX: 'center',
+        originY: 'center',
+        stroke: 'black',
+        left: texts_loc[i].x,
+        top: texts_loc[i].y,
+        fill:'white'
+    });
+
+    window["group" + i] = new fabric.Group([window["polygon_" + polys.zones[i].name], window["zoneRFID" + polys.zones[i].name] ],{
+       selectable: false,
+    });
+    canvas.add(window["group" + i]);
+    canvas.renderAll();
+
+
+  }
+
+}
+
+function updatePolygon(index, newValue){
+    console.log(index)
+  window["zoneRFID" + index].set('text',(newValue+ " tags"))
+  canvas.requestRenderAll();
+}
+
+function fetchAndUpdateData(){
+    $.getJSON( '{% url "reading-zones-snapshot" %}', function( data ) {
+      var items = data.data;
+      $.each( items, function( index, val ) {
+          updatePolygon(val.antenna,val.total)
+          $("#totalId1").html(val.total );
+      });
+    });
+}
+
+setTimeout(paintInitialPolygons,1000)
+fetchAndUpdateData()
+setInterval(fetchAndUpdateData,5000)
+</script>
+{% endblock %}

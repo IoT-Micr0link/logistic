@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from iot import views as iot_views
 from rfid import views as rfid_views
+from rfid import function_views as rfid_func_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -41,6 +42,9 @@ urlpatterns = [
     path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
 
     path('rfid/transfer-orders-tracking/', rfid_views.TrackingTransfersView.as_view(), name='tracking-transfer-orders'),
+    path('rfid/warehouse-tracking/', rfid_views.TrackingWarehouseView.as_view(), name='tracking-warehouse'),
+
+    path('rfid/reading-zones-snapshot/', rfid_func_views.reading_zones_summary, name='reading-zones-snapshot'),
 
     #Autocomplete
     path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),
