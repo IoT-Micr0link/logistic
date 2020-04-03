@@ -159,7 +159,7 @@ class TransferOrderItem(models.Model):
         unique_together = ('order', 'item')
 
 
-class TransferOrderTrancking(models.Model):
+class TransferOrderTracking(models.Model):
     order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
     timestamp_reading = models.DateTimeField(auto_now_add=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=7)

@@ -88,7 +88,6 @@ function paintInitialPolygons(){
       objectCaching: false,
       stroke: polyStrokeColors[i],
     });
-
     window["zoneRFID" + polys.zones[i].name] = new fabric.Text(texts[i], {
         fontFamily: 'Arial',
         fontSize: 30,
@@ -113,7 +112,7 @@ function paintInitialPolygons(){
 }
 
 function updatePolygon(index, newValue){
-    console.log(index)
+  console.log("zoneRFID" + index)
   window["zoneRFID" + index].set('text',(newValue+ " tags"))
   canvas.requestRenderAll();
 }
@@ -129,7 +128,7 @@ function fetchAndUpdateData(){
 }
 
 setTimeout(paintInitialPolygons,1000)
-fetchAndUpdateData()
+
 setInterval(fetchAndUpdateData,5000)
 </script>
 {% endblock %}
