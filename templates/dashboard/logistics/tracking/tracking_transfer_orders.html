@@ -6,14 +6,15 @@
     <div class="container-fluid">
         <div class="fade-in">
             <div class="row mb-2">
-                <div class="col-md-11 pr-0">
+                <div class="col-md-9 pr-0">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Número de Pedido" id="transferIdField">
                     </div>
                 </div>
-                <div class="col-md-1 pl-0">
+                <div class="col-md-3 pl-0">
                     <div class="input-group">
                         <button class="form-control bg-success text-white" onclick="searchTransfer()">Buscar</button>
+                        <button class="form-control bg-info text-white" onclick="searchTransferPath()">Ver ruta</button>
                     </div>
                 </div>
             </div>
@@ -22,7 +23,7 @@
                     <div class="card card-accent-info">
                         <div class="card-header  h4 mb-0">Tracking</div>
                         <div class="card-body h-100 p-0" >
-                                <div id="map"></div>
+                                <div id="map" style="height: 500px;"></div>
                         </div>
                     </div>
                 </div>
@@ -33,19 +34,20 @@
 {% endblock %}
 {% block load_after %}
 <script>
+let intervals = []
 mapboxgl.accessToken = 'pk.eyJ1IjoiaW90LW1pY3JvbGluayIsImEiOiJjazhnM3E5aGkwMHR2M2ZveWNwaWtkbDk0In0.LeF42aYO6fPwmo4RN6YYsg';
-var map = new mapboxgl.Map({
+let map = new mapboxgl.Map({
 container: 'map',
 style: 'mapbox://styles/mapbox/streets-v11',
 zoom: 14,
 center: [-74.1417202, 4.7488383],
 });
 
-var size = 100;
+let size = 100;
 
 // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
 // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
-var pulsingDotRed = {
+let pulsingDotRed = {
     width: size,
     height: size,
     data: new Uint8Array(size * size * 4),
@@ -111,7 +113,7 @@ var pulsingDotRed = {
     }
 };
 
-var pulsingDotBlue = {
+let pulsingDotBlue = {
     width: size,
     height: size,
     data: new Uint8Array(size * size * 4),
@@ -177,7 +179,6 @@ var pulsingDotBlue = {
     }
 };
 
-var url = 'https://wanderdrone.appspot.com/';
 
 map.on('load', function() {
     map.addImage('pulsing-dot-home', pulsingDotRed, {
@@ -236,13 +237,17 @@ function displayTransfer(data) {
 function resetMap() {
     if (map.getLayer('current-transfer-layer')) map.removeLayer('current-transfer-layer');
     if (map.getSource('current-transfer-source')) map.removeSource('current-transfer-source');
+    if (map.getLayer('trace')) map.removeLayer('trace');
+
     map.easeTo(
         {center:[-74.1417202, 4.7488383]}
     )
+    intervals.forEach(clearInterval);
 }
 
 
 function searchTransfer() {
+    resetMap()
     let searchValue = $("#transferIdField").val().trim();
     let url = "{% url 'transfer-order-coordinates' %}?transfer_order_id="+searchValue;
     if (searchValue){
@@ -262,6 +267,7 @@ function searchTransfer() {
                     }
                  });
             }, 3000);
+     intervals.push(timer)
 
     }else{
         console.log("no hay valor");
@@ -270,6 +276,70 @@ function searchTransfer() {
   
 }
 
+
+function searchTransferPath() {
+    let searchValue = $("#transferIdField").val().trim();
+    let url = "{% url 'transfer-order-coordinates' %}?include_history=on&transfer_order_id="+searchValue;
+    //let url = "https://docs.mapbox.com/mapbox-gl-js/assets/hike.geojson"
+    if (searchValue){
+         $.ajax({
+            url:url,
+            dataType: 'json',
+            success: function( json ) {
+              displayTransferPath(json)
+            },
+            error:function() {
+                alert("Pedido no encontrado");
+                window.clearInterval(timer);
+                resetMap();
+            }
+         });
+    }else{
+        console.log("no hay valor");
+        resetMap();
+    }
+
+}
+
+
+function displayTransferPath(data) {
+
+    // save full coordinate list for later
+    var coordinates = data.features[0].geometry.coordinates;
+    // start by showing just the first coordinate
+    data.features[0].geometry.coordinates = [coordinates[0]];
+    // add it to the map
+    map.addSource('trace', { type: 'geojson', data: data });
+    map.addLayer({
+        'id': 'trace',
+        'type': 'line',
+        'source': 'trace',
+        'paint': {
+        'line-color': 'blue',
+        'line-opacity': 0.75,
+        'line-width': 5
+    }
+    });
+    // setup the viewport
+    map.jumpTo({ 'center': coordinates[0], 'zoom': 14 });
+
+    // on a regular basis, add more coordinates from the saved list and update the map
+    var i = 0;
+    var timerPath = window.setInterval(function() {
+        if (i < coordinates.length) {
+        data.features[0].geometry.coordinates.push(
+        coordinates[i]
+        );
+        map.getSource('trace').setData(data);
+        map.panTo(coordinates[i]);
+        i++;
+        } else {
+        window.clearInterval(timerPath);
+        }
+    }, 100);
+
+
+}
 
 </script>
 
