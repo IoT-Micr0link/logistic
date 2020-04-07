@@ -26,7 +26,7 @@ class SKU(models.Model):
 
     @property
     def total_locations_inventory(self):
-        return Item.objects.filter(sku=self).values('last_seen_location__id').distinct().count()
+        return Item.objects.filter(sku=self).values('current_location__id').distinct().count()
 
 
 class PackingUnit(models.Model):
@@ -44,6 +44,7 @@ class Item(models.Model):
         ('READ','Lectura')
     )
     epc = models.CharField(max_length=150, primary_key=True)
+    current_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT, related_name="current_items")
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')

@@ -6,9 +6,9 @@ from rfid.models import *
 
 class InventorySummary(models.Model):
     sku = models.ForeignKey(SKU, on_delete=models.DO_NOTHING)
-    last_seen_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    current_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
     packing_unit = models.ForeignKey(PackingUnit, on_delete=models.DO_NOTHING)
-    count = models.IntegerField()
+    total_count = models.IntegerField()
 
     class Meta:
         managed = False

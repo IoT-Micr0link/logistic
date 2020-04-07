@@ -17,7 +17,7 @@ class InventoryRequestForm(forms.ModelForm):
          }
 
 
-class InvetorySummaryFilterForm(forms.Form):
+class InventorySummaryFilterForm(forms.Form):
     sku_id_from = forms.ModelChoiceField(queryset=SKU.objects.all(),required=False, label="Desde referencia",
         widget=autocomplete.ModelSelect2(
             url='sku-autocomplete',

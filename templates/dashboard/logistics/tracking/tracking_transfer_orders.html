@@ -238,11 +238,11 @@ function resetMap() {
     if (map.getLayer('current-transfer-layer')) map.removeLayer('current-transfer-layer');
     if (map.getSource('current-transfer-source')) map.removeSource('current-transfer-source');
     if (map.getLayer('trace')) map.removeLayer('trace');
-
+    if (map.getSource('trace')) map.getSource('trace');
+    intervals.forEach(clearInterval);
     map.easeTo(
         {center:[-74.1417202, 4.7488383]}
     )
-    intervals.forEach(clearInterval);
 }
 
 
@@ -278,6 +278,7 @@ function searchTransfer() {
 
 
 function searchTransferPath() {
+    resetMap();
     let searchValue = $("#transferIdField").val().trim();
     let url = "{% url 'transfer-order-coordinates' %}?include_history=on&transfer_order_id="+searchValue;
     //let url = "https://docs.mapbox.com/mapbox-gl-js/assets/hike.geojson"
@@ -303,6 +304,7 @@ function searchTransferPath() {
 
 
 function displayTransferPath(data) {
+
 
     // save full coordinate list for later
     var coordinates = data.features[0].geometry.coordinates;
@@ -337,6 +339,7 @@ function displayTransferPath(data) {
         window.clearInterval(timerPath);
         }
     }, 100);
+    intervals.push(timerPath)
 
 
 }

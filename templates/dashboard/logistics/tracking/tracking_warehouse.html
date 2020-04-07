@@ -9,10 +9,29 @@
             <div style="width: 700px" class="d-inline-block mr-4">
                 <div class="card card-accent-info">
                     <div class="card-header h4 mb-0">Tracking bodega</div>
-                    <div class="card-body " >
-                        <div id="canvas-container">
-                           <canvas id="canvas" height="500px" width="650px"></canvas>
+                    <div class="card-body" >
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Panorámica</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Plano</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <div id="canvas-container">
+                                   <canvas id="canvas" height="500px" width="650px"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <div id="canvas-container-floor">
+                                   <canvas id="canvas-floor" height="500px" width="650px"></canvas>
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -48,12 +67,20 @@
 <script>
 
 let canvas = new fabric.Canvas('canvas');
+let canvasFloor = new fabric.Canvas('canvas-floor');
 
 fabric.Image.fromURL('{% static "assets/img/backgrounds/bg.jpg" %}', function(img){
    img.scaleToWidth(canvas.width);
    img.scaleToHeight(canvas.height);
    canvas.setBackgroundImage(img);
    canvas.requestRenderAll();
+});
+
+fabric.Image.fromURL('{% static "assets/img/backgrounds/bg_floor.png" %}', function(img){
+   img.scaleToWidth(canvasFloor.width);
+   img.scaleToHeight(canvasFloor.height);
+   canvasFloor.setBackgroundImage(img);
+   canvasFloor.requestRenderAll();
 });
 
 function paintInitialPolygons(){
@@ -71,11 +98,11 @@ function paintInitialPolygons(){
   }
 
 
-  polyColors =["rgba(21,232,91,0.1)","rgba(255,0,10,0.1)"]
+  polyColors =["rgba(21,232,91,0.1)","rgba(255,0,10,0.1)"];
   polyStrokeColors =["rgba(21,232,91,1)","rgb(255,7,7)"]
 
   texts = ["0 tags", "0 tags"]
-  texts_loc = [{x: 170, y: 390},{x: 253, y: 271}]
+  texts_loc = [{x: 170, y: 390},{x: 253, y: 271}];
 
 
   for (var i = 0; polys.zones.length > i; i++){
@@ -109,11 +136,58 @@ function paintInitialPolygons(){
 
   }
 
+  polys_floor = {
+      zones : [
+          {
+              name:1,
+              points:[{x: 315, y: 305},{x: 515, y: 305},{x: 515, y: 481},{x: 315, y: 481}]
+          },
+          {
+              name:2,
+              points:[{x: 100, y: 305},{x: 300, y: 305},{x: 300, y: 481},{x: 100, y: 481}]
+          },
+      ]
+  };
+  texts_floor_loc = [{x: 415, y: 355},{x: 200, y: 355}];
+
+  for (var i = 0; polys_floor.zones.length > i; i++){
+
+    window["polygonFloor" + polys_floor.zones[i].name] = new fabric.Polygon(polys_floor.zones[i].points, { //creates the actual polygon
+      fill: polyColors[i],
+      PolygonNumber: i,
+      name: "Polygon",
+      selectable: false,
+      objectCaching: false,
+      stroke: polyStrokeColors[i],
+    });
+    window["zoneRFIDFloor" + polys_floor.zones[i].name ] = new fabric.Text(texts[i], {
+        fontFamily: 'Arial',
+        fontSize: 30,
+        textAlign: 'center',
+        originX: 'center',
+        originY: 'center',
+        stroke: 'blue',
+        left: texts_floor_loc[i].x,
+        top: texts_floor_loc[i].y,
+        fill:'black'
+    });
+
+    window["groupFloor" + i] = new fabric.Group(
+        [window["polygonFloor"+ polys_floor.zones[i].name],
+         window["zoneRFIDFloor" + polys_floor.zones[i].name]],{
+       selectable: false,
+    });
+    canvasFloor.add(window["groupFloor" + i]);
+    canvasFloor.renderAll();
+    }
+
 }
 
 function updatePolygon(index, newValue){
-  console.log("zoneRFID" + index)
-  window["zoneRFID" + index].set('text',(newValue+ " tags"))
+  console.log("zoneRFID" + index);
+  window["zoneRFID" + index].set('text',(newValue+ " tags"));
+  window["zoneRFIDFloor" + index].set('text',(newValue+ " tags"));
+  canvasFloor.requestRenderAll();
   canvas.requestRenderAll();
 }
 
@@ -122,7 +196,7 @@ function fetchAndUpdateData(){
       var items = data.data;
       $.each( items, function( index, val ) {
           updatePolygon(val.antenna,val.total)
-          $("#totalId1").html(val.total );
+          $("#totalId"+(index+1)).html(val.total );
       });
     });
 }

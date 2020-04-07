@@ -51,9 +51,9 @@
                             {%for row in locations_inventory_list %}
                                 <tbody>
                                     <tr>
-                                        <td>{{row.last_seen_location.name}}</td>
-                                        <td>{{row.count}}</td>
-                                        <td><a href="?last_seen_location={{row.last_seen_location.id}}"> ver </a></td>
+                                        <td>{{row.current_location__name}}</td>
+                                        <td>{{row.total}}</td>
+                                        <td><a href="?current_location={{row.current_location_id}}"> ver </a></td>
                                     </tr>
                                 </tbody>
                             {%endfor%}

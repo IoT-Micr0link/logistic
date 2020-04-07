@@ -5,16 +5,13 @@ from rfid.filters import *
 from rfid.forms import *
 from django.db.models import Count
 
-class InventoryView(generic.TemplateView):
-    template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
-
 
 class ItemInventoryView(SingleTableView):
     model = InventorySummary
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
     table_class = InventorySummaryTable
     filterset_class = InventorySummaryFilter
-    filterset_form = InvetorySummaryFilterForm
+    filterset_form = InventorySummaryFilterForm
     table_pagination = {
         'per_page': 30
     }
@@ -36,7 +33,7 @@ class LocationInventoryView(SingleTableView):
     template_name = 'dashboard/logistics/inventory/inventory_by_location.html'
     table_class = InventorySummaryTable
     filterset_class = InventorySummaryFilter
-    filterset_form = InvetorySummaryFilterForm
+    filterset_form = InventorySummaryFilterForm
     table_pagination = {
         'per_page': 30
     }
@@ -51,7 +48,6 @@ class LocationInventoryView(SingleTableView):
         context["form"] = form
         context["filter"] = filter
         return context
-
 
 
 class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
@@ -70,10 +66,11 @@ class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
     def get_context_data(self, **kwargs):
         context = super(SKUDetailView, self).get_context_data(**kwargs)
         filter = self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object))
-        context['location_id'] = self.request.GET.get('last_seen_location')
+        context['location_id'] = self.request.GET.get('current_location')
         context['filter'] = filter
-        context['locations_inventory_list'] = InventorySummary.objects\
-                                                .filter(sku=self.object).select_related('last_seen_location')
+        context['locations_inventory_list'] = Item.objects.filter(sku=self.object).values('current_location_id', 'current_location__name')\
+            .annotate(total=Count('current_location_id', distinct=False)).order_by('-total')
+
         return context
 
 
@@ -89,7 +86,7 @@ class SKUListView(SingleTableView):
         context = super(SKUListView, self).get_context_data(**kwargs)
         context['total_items'] = Item.objects.all().count()
         context['total_locations'] = Location.objects.all().count()
-        context['total_locations_in_use'] = Item.objects.all().values('last_seen_location__id').distinct().count()
+        context['total_locations_in_use'] = Item.objects.all().values('current_location__id').distinct().count()
         context['total_referencias'] = SKU.objects.count()
         return context
 
