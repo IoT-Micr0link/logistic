@@ -219,9 +219,17 @@ class TrackingTransfersView(generic.TemplateView):
 class TrackingWarehouseView(generic.TemplateView):
     template_name = 'dashboard/logistics/tracking/tracking_warehouse.html'
 
+
     def get_context_data(self, **kwargs):
         context = super(TrackingWarehouseView, self).get_context_data(**kwargs)
-        context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.all().values('antenna', 'antenna__name')\
+
+        items = Item.objects.all().values_list('epc', flat=True)  # This is not efficent
+        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+
+        context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.filter(
+            timestamp_reading__gte=time_threshold,
+            epc__in=items
+        ).values('antenna', 'antenna__name') \
             .annotate(total=Count('antenna')).order_by('total')
         return context
 

@@ -56,7 +56,22 @@
                         {%endfor%}
                         </table>
                     </div>
+                    <div class="card-header h4 mb-0 border-top"> No encontrados</div>
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="border-0 pt-0">Serial</th>
+                                    <th class="border-0 pt-0">Antena</th>
+                                </tr>
+                            </thead>
+                            <tbody id="missingItemsTable" class="font-sm">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
             </div>
         </div>
   </div>
@@ -192,6 +207,7 @@ function updatePolygon(index, newValue){
 }
 
 function fetchAndUpdateData(){
+
     $.getJSON( '{% url "reading-zones-snapshot" %}', function( data ) {
       var items = data.data;
       $.each( items, function( index, val ) {
@@ -199,10 +215,24 @@ function fetchAndUpdateData(){
           $("#totalId"+(index+1)).html(val.total );
       });
     });
+
+     $.getJSON( '{% url "reading-missing-items" %}', function( data ) {
+      var items = data.data;
+      console.log(data)
+      $('#missingItemsTable').empty();
+      $.each( items, function( index, val ) {
+           $('#missingItemsTable').append(
+               '<tr>' +
+                '<td>'+ val.sku+ '<br/>' + val.serial + '</td> ' +
+                '<td>'+ val.antenna_name +'</td>' +
+               '</tr>'
+           );
+      });
+    });
 }
 
 setTimeout(paintInitialPolygons,1000)
 
-setInterval(fetchAndUpdateData,5000)
+setInterval(fetchAndUpdateData,10000)
 </script>
 {% endblock %}

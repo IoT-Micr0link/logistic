@@ -1,0 +1,12 @@
+{% load static %}
+<div>
+{% if record.current_location != record.last_seen_location or record.not_seen_recently %}
+      <svg class="c-icon c-icon-xl text-danger">
+        <use xlink:href='{% static "vendor/core-ui/icons/sprites/free.svg" %}#cil-audio'></use>
+      </svg>
+{% else %}
+      <svg class="c-icon c-icon-xl text-success">
+        <use xlink:href='{% static "vendor/core-ui/icons/sprites/free.svg" %}#cil-audio'></use>
+      </svg>
+{% endif %}
+</div>

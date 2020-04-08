@@ -46,6 +46,8 @@ urlpatterns = [
 
     path('rfid/reading-zones-snapshot/', rfid_func_views.reading_zones_summary, name='reading-zones-snapshot'),
     path('rfid/transfer-order-coordinates/', rfid_func_views.transfer_order_coordinates, name='transfer-order-coordinates'),
+    path('rfid/reading-missing-items/', rfid_func_views.missing_items_readings,name='reading-missing-items'),
+
 
     #Autocomplete
     path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),

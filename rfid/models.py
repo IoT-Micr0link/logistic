@@ -1,6 +1,9 @@
 from django.db import models
 from datetime import date
 from django.contrib.postgres.fields import HStoreField
+from django.utils import timezone
+from django.conf import settings
+from datetime import timedelta
 
 
 class Location(models.Model):
@@ -60,6 +63,11 @@ class Item(models.Model):
         today = date.today()
         delta = today - self.last_seen_timestamp.date()
         return delta.days
+
+    @property
+    def not_seen_recently(self):
+        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+        return self.last_seen_timestamp < time_threshold
 
 
 class Node(models.Model):

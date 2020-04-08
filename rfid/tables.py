@@ -35,11 +35,13 @@ class InventorySummaryTable(TableBase):
     #reference = tables.Column(accessor='sku', verbose_name="Referencia")
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
     packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
-    count = tables.Column(accessor='count', verbose_name="Cant")
+    count = tables.Column(accessor='total_count', verbose_name="Cant")
+    review = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_inventory_count_cell.html",
+                                  verbose_name="Revisar")
 
     class Meta(TableBase.Meta):
         model = InventorySummary
-        fields = ('reference','current_location','count','packing_unit')
+        fields = ('reference','current_location','count','packing_unit','review')
 
 
 class ItemTable(TableBase):
@@ -47,15 +49,15 @@ class ItemTable(TableBase):
     reference = tables.Column(accessor='sku.display_name', verbose_name="Referencia")
     description = tables.Column(accessor='display_name', verbose_name="Descripción")
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
-    #in_transit = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/in_transit_cell.html",
-    #                                        orderable=False)
     count = tables.Column(empty_values=(), verbose_name="Cant")
     packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
+    reading_icon = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_read_icon_Cell.html",
+                                            verbose_name="",orderable=False)
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit','current_location' )
-        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location' )
+        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit','current_location','reading_icon' )
+        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location','reading_icon' )
 
     def render_count(self):
         return "1"

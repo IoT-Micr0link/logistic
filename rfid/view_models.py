@@ -1,7 +1,9 @@
-from django.db import models
-from rfid.models import *
-
 # These models are intended for database views
+from rfid.models import *
+from django.db.models import Q
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
 
 
 class InventorySummary(models.Model):
@@ -14,6 +16,38 @@ class InventorySummary(models.Model):
         managed = False
         db_table = 'inventory_summary'
         ordering = ['sku']
+
+    @property
+    def total_missing(self):
+        ## missing items are those that were read in a
+        # different location than expected, or that its last
+        # reading was over 5 minutes ago.
+
+        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+
+        base_qs = Item.objects.filter(
+            Q(last_seen_timestamp__lte=time_threshold) | ~Q(last_seen_location=self.current_location),
+            sku=self.sku,
+            packing_unit=self.packing_unit,
+            current_location=self.current_location
+        )
+
+        return base_qs.count() or 0
+
+    @property
+    def total_extra(self):
+        ##extra items are those that were read in the current location but belong to another
+        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+
+        base_qs = Item.objects.filter(
+            ~Q(current_location = self.current_location),
+            last_seen_timestamp__gte=time_threshold,
+            sku=self.sku,
+            packing_unit=self.packing_unit,
+            last_seen_location=self.current_location
+        )
+        return base_qs.count() or 0
+
 
     def save(self, *args, **kwargs):
         return
