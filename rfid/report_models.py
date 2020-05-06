@@ -1,4 +1,0 @@
-
-from rfid.models import *
-
-

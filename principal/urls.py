@@ -1,53 +1,23 @@
-"""principal URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+"""principal URL Configuration"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from iot import views as iot_views
 from rfid import views as rfid_views
-from rfid import function_views as rfid_func_views
+from rest_api import urls as rest_api_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', iot_views.DashboardView.as_view(), name='index'),
-    path('logistics/inventory/items-inventory-sku/', rfid_views.ItemInventoryView.as_view(), name='logistics-item-inventory-sku'),
-    path('logistics/inventory/items-inventory-location/', rfid_views.LocationInventoryView.as_view(), name='logistics-item-inventory-location'),
 
-    path('logistics/inventory/skus/', rfid_views.SKUListView.as_view(), name='logistics-sku-inventory'),
-    path('logistics/inventory/skus/<int:pk>/detail/', rfid_views.SKUDetailView.as_view(), name='logistics-sku-detail'),
-    path('logistics/transfer-orders/', rfid_views.TransferOrderListView.as_view(), name='logistics-transfer-order-list'),
-    path('logistics/transfer-orders/<int:id_order>/detail/',
-         rfid_views.TransferOrderDetailView.as_view(), name='logistics-transfer-order-detail'),
+    # URLS LOGISTICS (Include rfid.urls)
 
-    path('logistics/warehouse-entries/', rfid_views.WarehouseEntryListView.as_view(),
-         name='logistics-warehouse-entry-list'),
-    path('logistics/warehouse-entries/<int:id_entry>/detail/',
-         rfid_views.WarehouseEntryDetailView.as_view(), name='logistics-warehouse-entry-detail'),
+    path('logistics/', include(('rfid.urls', 'rfid'), namespace='logistics')),
 
-    path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-reader-list'),
-    path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings-list'),
+    # REST API URL (Include rest_api.url)
 
-    path('rfid/transfer-orders-tracking/', rfid_views.TrackingTransfersView.as_view(), name='tracking-transfer-orders'),
-    path('rfid/warehouse-tracking/', rfid_views.TrackingWarehouseView.as_view(), name='tracking-warehouse'),
-
-    path('rfid/reading-zones-snapshot/', rfid_func_views.reading_zones_summary, name='reading-zones-snapshot'),
-    path('rfid/transfer-order-coordinates/', rfid_func_views.transfer_order_coordinates, name='transfer-order-coordinates'),
-    path('rfid/reading-missing-items/', rfid_func_views.missing_items_readings,name='reading-missing-items'),
-
+    path('rest_api/', include(('rest_api.urls', 'rest_api'), namespace='rest_api')),
 
     #Autocomplete
     path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),

@@ -19,7 +19,7 @@ class InventorySummary(models.Model):
 
     @property
     def total_missing(self):
-        ## missing items are those that were read in a
+        # missing items are those that were read in a
         # different location than expected, or that its last
         # reading was over 5 minutes ago.
 
@@ -36,18 +36,17 @@ class InventorySummary(models.Model):
 
     @property
     def total_extra(self):
-        ##extra items are those that were read in the current location but belong to another
+        # extra items are those that were read in the current location but belong to another
         time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
 
         base_qs = Item.objects.filter(
-            ~Q(current_location = self.current_location),
+            ~Q(current_location=self.current_location),
             last_seen_timestamp__gte=time_threshold,
             sku=self.sku,
             packing_unit=self.packing_unit,
             last_seen_location=self.current_location
         )
         return base_qs.count() or 0
-
 
     def save(self, *args, **kwargs):
         return
@@ -74,4 +73,3 @@ class LastReadingsSnapshot(models.Model):
 
     def delete(self, *args, **kwargs):
         return
-

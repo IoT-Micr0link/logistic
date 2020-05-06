@@ -208,7 +208,7 @@ function updatePolygon(index, newValue){
 
 function fetchAndUpdateData(){
 
-    $.getJSON( '{% url "reading-zones-snapshot" %}', function( data ) {
+    $.getJSON( '{% url "rest_api:reading-zones-snapshot" %}', function( data ) {
       var items = data.data;
       $.each( items, function( index, val ) {
           updatePolygon(val.antenna,val.total)
@@ -216,7 +216,7 @@ function fetchAndUpdateData(){
       });
     });
 
-     $.getJSON( '{% url "reading-missing-items" %}', function( data ) {
+     $.getJSON( '{% url "rest_api:reading-missing-items" %}', function( data ) {
       var items = data.data;
       console.log(data)
       $('#missingItemsTable').empty();

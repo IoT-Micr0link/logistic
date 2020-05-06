@@ -10,38 +10,39 @@ class TableBase(tables.Table):
         orderable = False
         attrs = {
             "class": "table",
-            "thead":{
-                "class":"thead-dark"
+            "thead": {
+                "class": "thead-dark"
             }
         }
 
 
 class SkuInventoryTable(TableBase):
     display_name = tables.Column(accessor='display_name', verbose_name="Descripción")
-    total_inventory = tables.Column(accessor='total_inventory', verbose_name="Total inventario")
-    total_locations_inventory = tables.Column(accessor='total_locations_inventory', verbose_name="En cuantas bodegas")
-    detail = tables.LinkColumn('logistics-sku-detail', text="ver detalle", verbose_name="Ver detalle",
-                                       args=[A('id')])
+    total_inventory = tables.Column(accessor='total_inventory', verbose_name="Total Inventario")
+    total_locations_inventory = tables.Column(accessor='total_locations_inventory', verbose_name="Por Bodegas")
+    detail = tables.LinkColumn('logistics:sku-detail', text="Ver Detalle", verbose_name="Ver Detalle",
+                               args=[A('id')])
 
     class Meta(TableBase.Meta):
         model = SKU
-        fields = ('id', 'display_name', 'total_inventory','total_locations_inventory', 'detail')
+        fields = ('id', 'display_name', 'total_inventory', 'total_locations_inventory', 'detail')
 
 
 class InventorySummaryTable(TableBase):
     reference = tables.TemplateColumn(
         template_name="dashboard/logistics/inventory/partials/item_reference_cell.html"
         , verbose_name="Referencia")
-    #reference = tables.Column(accessor='sku', verbose_name="Referencia")
+    # reference = tables.Column(accessor='sku', verbose_name="Referencia")
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
     packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
     count = tables.Column(accessor='total_count', verbose_name="Cant")
-    review = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_inventory_count_cell.html",
-                                  verbose_name="Revisar")
+    review = tables.TemplateColumn(
+        template_name="dashboard/logistics/inventory/partials/item_inventory_count_cell.html",
+        verbose_name="Revisar")
 
     class Meta(TableBase.Meta):
         model = InventorySummary
-        fields = ('reference','current_location','count','packing_unit','review')
+        fields = ('reference', 'current_location', 'count', 'packing_unit', 'review')
 
 
 class ItemTable(TableBase):
@@ -51,13 +52,14 @@ class ItemTable(TableBase):
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
     count = tables.Column(empty_values=(), verbose_name="Cant")
     packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
-    reading_icon = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_read_icon_Cell.html",
-                                            verbose_name="",orderable=False)
+    reading_icon = tables.TemplateColumn(
+        template_name="dashboard/logistics/inventory/partials/item_read_icon_cell.html",
+        verbose_name="", orderable=False)
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit','current_location','reading_icon' )
-        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location','reading_icon' )
+        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location', 'reading_icon')
+        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location', 'reading_icon')
 
     def render_count(self):
         return "1"
@@ -93,8 +95,8 @@ class TransferOrderTable(TableBase):
     actual_completion_date = tables.Column(accessor='actual_completion_date', verbose_name="Fecha de entrega ")
     state = tables.Column(accessor='state', verbose_name="Estado")
     total_items = tables.Column(accessor='total_items', verbose_name="Total Items")
-    detalle = tables.LinkColumn('logistics-transfer-order-detail', text="ver detalle",
-                                       args=[A('id')])
+    detalle = tables.LinkColumn('logistics:transfer-order-detail', text="ver detalle",
+                                args=[A('id')])
 
     class Meta(TableBase.Meta):
         model = TransferOrder
@@ -103,10 +105,10 @@ class TransferOrderTable(TableBase):
 
 
 class TransferOrderItemTable(TableBase):
-
     reference = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
-    description = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
-                                        ,verbose_name="Descripción")
+    description = tables.TemplateColumn(
+        template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
+        , verbose_name="Descripción")
     epc = tables.Column(accessor="item.epc", verbose_name="Serial")
     count = tables.Column(empty_values=(), verbose_name="Cant")
     state = tables.Column(accessor="state", verbose_name="Estado")
@@ -116,8 +118,8 @@ class TransferOrderItemTable(TableBase):
 
     class Meta(TableBase.Meta):
         model = TransferOrderItem
-        sequence = ('reference', 'description', 'epc', 'state', 'count','packing_unit','fecha_ultimo_registro')
-        fields = ('reference','description', 'epc', 'state', 'count','packing_unit','fecha_ultimo_registro')
+        sequence = ('reference', 'description', 'epc', 'state', 'count', 'packing_unit', 'fecha_ultimo_registro')
+        fields = ('reference', 'description', 'epc', 'state', 'count', 'packing_unit', 'fecha_ultimo_registro')
 
     def render_count(self):
         return "1"
@@ -130,8 +132,8 @@ class WarehouseEntryTable(TableBase):
     entry_date = tables.Column(accessor="entry_date", verbose_name="Fecha de recepción")
     total_items = tables.Column(accessor="total_items", verbose_name="Total Items")
 
-    detail = tables.LinkColumn("logistics-warehouse-entry-detail", text="ver detalle", verbose_name="Ver detalle",
-                                       args=[A('id')])
+    detail = tables.LinkColumn("logistics:warehouse-entry-detail", text="ver detalle", verbose_name="Ver detalle",
+                               args=[A('id')])
 
     class Meta(TableBase.Meta):
         model = WarehouseEntry
@@ -140,18 +142,18 @@ class WarehouseEntryTable(TableBase):
 
 
 class WarehouseEntryItemTable(TableBase):
-
     reference = tables.Column(accessor='item.sku.display_name', verbose_name="Referencia")
-    description = tables.TemplateColumn(template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
-                                        ,verbose_name="Descripción")
+    description = tables.TemplateColumn(
+        template_name="dashboard/logistics/inventory/partials/item_description_cell.html"
+        , verbose_name="Descripción")
     epc = tables.Column(accessor='item.epc', verbose_name="Serial")
     count = tables.Column(empty_values=(), verbose_name="Cant")
     packing_unit = tables.Column(accessor='item.packing_unit', verbose_name="Unidad")
 
     class Meta(TableBase.Meta):
         model = WarehouseEntryItem
-        sequence = ('reference','description','epc','count', 'packing_unit')
-        fields = ('reference','description','epc','count', 'packing_unit')
+        sequence = ('reference', 'description', 'epc', 'count', 'packing_unit')
+        fields = ('reference', 'description', 'epc', 'count', 'packing_unit')
 
     def render_count(self):
         return "1"
@@ -166,5 +168,4 @@ class InventoryReportLineTable(TableBase):
 
     class Meta(TableBase.Meta):
         model = InventoryReportLine
-        exclude = ('id','report')
-
+        exclude = ('id', 'report')

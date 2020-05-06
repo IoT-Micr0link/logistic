@@ -1,9 +1,10 @@
+"""RFID Models"""
+
 from django.db import models
-from datetime import date
+from datetime import date, timedelta
 from django.contrib.postgres.fields import HStoreField
 from django.utils import timezone
 from django.conf import settings
-from datetime import timedelta
 
 
 class Location(models.Model):
@@ -42,12 +43,13 @@ class PackingUnit(models.Model):
 
 class Item(models.Model):
     ACTION = (
-        ('IN','Entrada'),
-        ('OUT','Salida'),
-        ('READ','Lectura')
+        ('IN', 'Entrada'),
+        ('OUT', 'Salida'),
+        ('READ', 'Lectura')
     )
     epc = models.CharField(max_length=150, primary_key=True)
-    current_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT, related_name="current_items")
+    current_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT,
+                                         related_name="current_items")
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
@@ -106,9 +108,9 @@ class ReaderAntenna(models.Model):
 
 class Reading(models.Model):
     ACTION = (
-        ('IN','Entrada'),
-        ('OUT','Salida'),
-        ('READ','Lectura')
+        ('IN', 'Entrada'),
+        ('OUT', 'Salida'),
+        ('READ', 'Lectura')
     )
     id = models.BigAutoField(primary_key=True)
     epc = models.CharField(max_length=150)
@@ -132,7 +134,7 @@ class TransferOrder(models.Model):
     destination = models.ForeignKey(Location, on_delete=models.PROTECT)
     expected_completion_date = models.DateField(null=True, blank=True)
     actual_completion_date = models.DateTimeField(null=True, blank=True)
-    state = models.CharField(max_length=3, choices=STATE ,default='RE')
+    state = models.CharField(max_length=3, choices=STATE, default='RE')
 
     def __str__(self):
         return '{}-[{}]'.format(self.pk, self.state)
@@ -148,17 +150,17 @@ class TransferOrder(models.Model):
 
 class TransferOrderItem(models.Model):
     STATE = (
-        ('RE',  'Por alistar'),
-        ('AL',  'Alistado'),
+        ('RE', 'Por alistar'),
+        ('AL', 'Alistado'),
         ('NOE', 'No entregado'),
-        ('EN',  'Entregado')
+        ('EN', 'Entregado')
     )
-    order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey(TransferOrder, on_delete=models.CASCADE, null=True)
     item = models.ForeignKey(Item, on_delete=models.PROTECT)
     state = models.CharField(max_length=3, choices=STATE, default='RE')
 
     def __str__(self):
-        return '{}-[{}]'.format(self.item, self.state)
+        return '{}-{}-[{}]'.format(self.item.display_name, self.item.epc, self.state)
 
     @property
     def last_out_reading(self):
@@ -169,7 +171,7 @@ class TransferOrderItem(models.Model):
 
 
 class TransferOrderTracking(models.Model):
-    order = models.ForeignKey(TransferOrder,on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey(TransferOrder, on_delete=models.CASCADE, null=True)
     timestamp_reading = models.DateTimeField(auto_now_add=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=7)
     longitude = models.DecimalField(max_digits=10, decimal_places=7)
@@ -193,7 +195,7 @@ class WarehouseEntry(models.Model):
 
 
 class WarehouseEntryItem(models.Model):
-    entry = models.ForeignKey(WarehouseEntry,on_delete=models.PROTECT)
+    entry = models.ForeignKey(WarehouseEntry, on_delete=models.PROTECT)
     item = models.ForeignKey(Item, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -203,16 +205,20 @@ class WarehouseEntryItem(models.Model):
         unique_together = ('entry', 'item')
 
 
-###Reports
+# Reports
 
 class InventoryRequest(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     finish_date = models.DateTimeField(null=True, blank=True)
     wait_minutes = models.PositiveIntegerField(default=10)
-    init_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_init')
-    end_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_end')
-    init_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_init')
-    end_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT, related_name='inv_request_end')
+    init_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT,
+                                 related_name='inv_request_init')
+    end_sku = models.ForeignKey(SKU, null=True, blank=True, on_delete=models.PROTECT,
+                                related_name='inv_request_end')
+    init_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT,
+                                      related_name='inv_request_init')
+    end_location = models.ForeignKey(Location, null=True, blank=True, on_delete=models.PROTECT,
+                                     related_name='inv_request_end')
     all_locations = models.BooleanField(default=False)
     all_skus = models.BooleanField(default=False)
 

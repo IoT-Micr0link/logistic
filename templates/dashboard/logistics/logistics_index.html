@@ -10,16 +10,16 @@
                     <div class="card card-accent-info">
                     <div class="card-header">
                         <span class="h2">Inventario <i class="fa fa-line-chart" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics-sku-inventory' %}" role="button">Ver</a>
+                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:sku-inventory' %}" role="button">Ver</a>
                     </div>
-                    <div class="card-body">Texto por definir</div>
+                    <div class="card-body">Items en inventario: {{ total_items }}</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card card-accent-info">
                     <div class="card-header">
                         <span class="h2">Entradas <i class="fa fa-arrow-circle-up" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics-warehouse-entry-list' %}" role="button">Ver</a>
+                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:warehouse-entry-list' %}" role="button">Ver</a>
                     </div>
                     <div class="card-body">Texto por definir</div>
                     </div>
@@ -28,7 +28,7 @@
                     <div class="card card-accent-info">
                     <div class="card-header">
                         <span class="h2">Salidas <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics-transfer-order-list' %}" role="button">Ver</a>
+                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:transfer-order-list' %}" role="button">Ver</a>
                     </div>
                     <div class="card-body">Texto por definir,</div>
                     </div>
@@ -37,10 +37,10 @@
                     <div class="card card-accent-info">
                     <div class="card-header">
                         <span class="h2">Tracking <i class="fa fa-map-marker" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right " href="{% url 'tracking-transfer-orders' %}" role="button">Ver pedido</a>
-                        <a class="btn btn-outline-info float-right mx-2" href="{% url 'tracking-warehouse' %}" role="button">Ver bodega</a>
+                        <a class="btn btn-outline-info float-right " href="{% url 'logistics:tracking-transfer-orders' %}" role="button">Ver pedido</a>
+                        <a class="btn btn-outline-info float-right mx-2" href="{% url 'logistics:tracking-warehouse' %}" role="button">Ver bodega</a>
                     </div>
-                    <div class="card-body">Texto por definir </div>
+                    <div class="card-body">Texto por definir</div>
                     </div>
                 </div>
             </div>

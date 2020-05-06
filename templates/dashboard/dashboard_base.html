@@ -17,8 +17,8 @@
             </svg>Inventario Físico
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-item-inventory-sku' %}"> Por Artículo </a></li>
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-item-inventory-location' %}"> Por Bodega </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-sku' %}"> Por Artículo </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-location' %}"> Por Bodega </a></li>
 
         </ul>
     </li>
@@ -30,8 +30,8 @@
             </svg> Movimientos
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-warehouse-entry-list' %}"> Entradas </a></li>
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics-transfer-order-list' %}"> Salidas </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:warehouse-entry-list' %}"> Entradas </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:transfer-order-list' %}"> Salidas </a></li>
         </ul>
     </li>
 
@@ -107,8 +107,8 @@
     {% block child %}{% endblock %}
   </div>
   <footer class="c-footer">
-    <div><a href="https://www.microlink.com.co/">Microlink S.A.S </a> &copy; 2020</div>
-    <div class="ml-auto">Powered by&nbsp;<a href="https://www.microlink.com.co/">Microlink SAS</a></div>
+    <div><a href="https://www.microlink.com.co/" target="_blank">Microlink S.A.S </a> &copy; 2020</div>
+    <div class="ml-auto">Powered by&nbsp;<a href="https://www.microlink.com.co/" target="_blank">Microlink SAS</a></div>
   </footer>
 </div>
 {% endblock %}

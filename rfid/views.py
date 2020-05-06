@@ -1,4 +1,4 @@
-from django.views import generic
+from django.views.generic import DetailView, TemplateView
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.filters import *
@@ -50,7 +50,7 @@ class LocationInventoryView(SingleTableView):
         return context
 
 
-class SKUDetailView(SingleTableMixin,  generic.detail.DetailView):
+class SKUDetailView(SingleTableMixin, DetailView):
     model = SKU
     template_name = 'dashboard/logistics/inventory/sku_detail.html'
     context_object_name = "sku_object"
@@ -167,7 +167,6 @@ class TransferOrderDetailView(SingleTableView):
         context['items_count'] = items_count
         context['enlisted_items_per'] = enlisted_items_per
 
-
         return context
 
 
@@ -212,18 +211,18 @@ class WarehouseEntryDetailView(SingleTableView):
         return context
 
 
-class TrackingTransfersView(generic.TemplateView):
+class TrackingTransfersView(TemplateView):
     template_name = 'dashboard/logistics/tracking/tracking_transfer_orders.html'
 
 
-class TrackingWarehouseView(generic.TemplateView):
+class TrackingWarehouseView(TemplateView):
     template_name = 'dashboard/logistics/tracking/tracking_warehouse.html'
 
 
     def get_context_data(self, **kwargs):
         context = super(TrackingWarehouseView, self).get_context_data(**kwargs)
 
-        items = Item.objects.all().values_list('epc', flat=True)  # This is not efficent
+        items = Item.objects.all().values_list('epc', flat=True)  # This is not efficient
         time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
 
         context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.filter(

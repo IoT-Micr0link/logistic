@@ -1,13 +1,10 @@
-from django_filters import  FilterSet, filters
-from django import forms
+from django_filters import FilterSet, filters
 from rfid.models import *
 from rfid.view_models import InventorySummary
-from django.contrib.admin import widgets
-from django.contrib import admin
 
 
 class ItemFilter(FilterSet):
-    last_seen_min = filters.DateTimeFilter(field_name='last_seen_timestamp', lookup_expr='date__gte' )
+    last_seen_min = filters.DateTimeFilter(field_name='last_seen_timestamp', lookup_expr='date__gte')
     last_seen_max = filters.DateTimeFilter(field_name='last_seen_timestamp', lookup_expr='date__lte')
 
     class Meta:
@@ -39,25 +36,23 @@ class InventorySummaryFilter(FilterSet):
 
     class Meta:
         model = InventorySummary
-        fields = ('sku_id','sku_id_from','sku_id_to', 'all_skus',
-                  'location_id','location_id_from','location_id_to','all_locations',)
+        fields = ('sku_id', 'sku_id_from', 'sku_id_to', 'all_skus',
+                  'location_id', 'location_id_from', 'location_id_to', 'all_locations',)
 
 
 class WarehouseEntryFilter(FilterSet):
-    entry_date_min = filters.DateTimeFilter(field_name='entry_date', lookup_expr='date__gte' )
+    entry_date_min = filters.DateTimeFilter(field_name='entry_date', lookup_expr='date__gte')
     entry_date_max = filters.DateTimeFilter(field_name='entry_date', lookup_expr='date__lte')
 
     class Meta:
-        model=WarehouseEntry
+        model = WarehouseEntry
         fields = ('location', 'origin',)
 
 
 class TransferOrderFilter(FilterSet):
-    completion_date_min = filters.DateTimeFilter(field_name='actual_completion_date', lookup_expr='date__gte' )
+    completion_date_min = filters.DateTimeFilter(field_name='actual_completion_date', lookup_expr='date__gte')
     completion_date_max = filters.DateTimeFilter(field_name='actual_completion_date', lookup_expr='date__lte')
 
     class Meta:
         model = TransferOrder
-        fields = ('destination', )
-
-
+        fields = ('destination',)

@@ -249,7 +249,7 @@ function resetMap() {
 function searchTransfer() {
     resetMap()
     let searchValue = $("#transferIdField").val().trim();
-    let url = "{% url 'transfer-order-coordinates' %}?transfer_order_id="+searchValue;
+    let url = "{% url 'rest_api:transfer-order-coordinates' %}?transfer_order_id="+searchValue;
     if (searchValue){
 
      let timer = window.setInterval(
@@ -280,7 +280,7 @@ function searchTransfer() {
 function searchTransferPath() {
     resetMap();
     let searchValue = $("#transferIdField").val().trim();
-    let url = "{% url 'transfer-order-coordinates' %}?include_history=on&transfer_order_id="+searchValue;
+    let url = "{% url 'rest_api:transfer-order-coordinates' %}?include_history=on&transfer_order_id="+searchValue;
     //let url = "https://docs.mapbox.com/mapbox-gl-js/assets/hike.geojson"
     if (searchValue){
          $.ajax({
