@@ -1,10 +1,7 @@
-
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -16,7 +13,6 @@ SECRET_KEY = '+4)%8jk1j*&hozv$vp(-c)(c(4%dr3b#yig7zcbh96gqj-vydc'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -67,11 +63,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'principal.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if os.getenv('GAE_APPLICATION', None) or os.getenv('GAE_INSTANCE', None) :
+if os.getenv('GAE_APPLICATION', None) or os.getenv('GAE_INSTANCE', None):
     # Running on production App Engine, so connect to Google Cloud SQL using
     DATABASES = {
         'default': {
@@ -81,6 +76,17 @@ if os.getenv('GAE_APPLICATION', None) or os.getenv('GAE_INSTANCE', None) :
             'NAME': 'iot-demo',
             'USER': 'iot_app_user',
             'PASSWORD': 'tkGcbOC2w8x3tos1',
+        }
+    }
+elif os.getenv('BD_DEBUG'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'iotdemo',
+            'USER': 'iot',
+            'PASSWORD': 'iot_password',
+            'HOST': 'localhost',
+            'PORT': '5432'
         }
     }
 else:
@@ -115,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -129,13 +134,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
 
-#STATIC_ROOT  = "static"
+# STATIC_ROOT  = "static"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -146,6 +150,6 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
-#RFID Reading cycle
+# RFID Reading cycle
 # Defines the  interval de reader is updating data in minutes
 RFID_READING_CYCLE = 60

@@ -15,6 +15,13 @@ class Location(models.Model):
         return '{}'.format(self.name)
 
 
+class Sites(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class SKU(models.Model):
     display_name = models.CharField(max_length=200)
     reference_image = models.ImageField(null=True)
