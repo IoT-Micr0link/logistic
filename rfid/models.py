@@ -24,7 +24,6 @@ class Sites(models.Model):
 
 class SKU(models.Model):
     display_name = models.CharField(max_length=200)
-    reference_image = models.ImageField(null=True)
     datasheet = models.FileField(null=True, blank=True)
     data = HStoreField(null=True, blank=True)
 
@@ -66,6 +65,7 @@ class Item(models.Model):
     in_transit = models.BooleanField(default=False)
     image = models.ImageField(null=True)
     packing_unit = models.ForeignKey(PackingUnit, null=True, blank=True, on_delete=models.PROTECT)
+    origin_site = models.ForeignKey(Sites, null=True, on_delete=models.PROTECT)
 
     @property
     def age(self):
