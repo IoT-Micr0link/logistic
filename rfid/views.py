@@ -3,28 +3,67 @@ from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
 from rfid.filters import *
 from rfid.forms import *
-from django.db.models import Count
+from django.db.models import Count, F
 
 
-class ItemInventoryView(SingleTableView):
-    model = InventorySummary
-    template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
-    table_class = InventorySummaryTable
-    filterset_class = InventorySummaryFilter
-    filterset_form = InventorySummaryFilterForm
+class SKUInventoryView(SingleTableView):
+    model = SKU
+    template_name = 'dashboard/logistics/inventory/inventory_by_sku.html'
+    table_class = SkuInventoryTable
+    filterset_class = SKUFilter
+    filterset_form = SKUfilterForm
     table_pagination = {
         'per_page': 30
     }
 
     def get_table_data(self):
-        return self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all()).qs
+        return self.filterset_class(self.request.GET, queryset=SKU.objects.all()).qs
 
     def get_context_data(self, **kwargs):
-        context = super(ItemInventoryView, self).get_context_data(**kwargs)
+        context = super(SKUInventoryView, self).get_context_data(**kwargs)
         form = self.filterset_form(self.request.GET or None)
-        filter = self.filterset_class(self.request.GET, queryset=InventorySummary.objects.all())
+        filter = self.filterset_class(self.request.GET, queryset=SKU.objects.all())
         context["form"] = form
         context["filter"] = filter
+        return context
+
+
+class SKUDetailView(SingleTableMixin, DetailView):
+    model = SKU
+    template_name = 'dashboard/logistics/inventory/sku_detail.html'
+    table_class = SKUDetailTable
+    filterset_class = ItemFilter
+    table_pagination = {
+        'per_page': 5
+    }
+
+    def get_table_class(self):
+        if not self.request.GET.get('current_location'):
+            return SKUDetailTable
+        else:
+            return ItemTable
+
+    def get_table_data(self):
+        if not self.request.GET.get('current_location'):
+            return Item.objects.filter(sku=self.object.id) \
+                .values('current_location_id', 'current_location__description',
+                        'sku_id', 'sku__display_name') \
+                .annotate(sku_description=F('sku__display_name'),
+                          location_id=F('current_location_id'),
+                          location=F('current_location__description'),
+                          total=Count('current_location_id',
+                                      distinct=False)).order_by('-total')
+        else:
+            return self.filterset_class(self.request.GET,
+                                        queryset=Item.objects.filter(sku=self.object.id)).qs
+
+    def get_context_data(self, **kwargs):
+        context = super(SKUDetailView, self).get_context_data(**kwargs)
+        if self.request.GET.get('current_location'):
+            context['filter'] = (
+                self.filterset_class(self.request.GET, queryset=Item.objects.filter(
+                    sku=self.object.id))
+            )
         return context
 
 
@@ -50,9 +89,27 @@ class LocationInventoryView(SingleTableView):
         return context
 
 
-class SKUDetailView(SingleTableMixin, DetailView):
-    model = SKU
-    template_name = 'dashboard/logistics/inventory/sku_detail.html'
+class ItemListView(SingleTableView):
+    model = Item
+    template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
+    table_class = ItemTable
+    table_pagination = {
+        'per_page': 30
+    }
+
+    def get_table_data(self):
+        return Item.objects.all().order_by('epc')
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemListView, self).get_context_data(**kwargs)
+        context['total_locations'] = Location.objects.all().count()
+        context['total_locations_in_use'] = Item.objects.all().values('current_location__id').distinct().count()
+        return context
+
+
+class ItemDetailView(SingleTableMixin, DetailView):
+    model = Item
+    template_name = 'dashboard/logistics/inventory/item-detail.html'
     context_object_name = "sku_object"
     table_class = ItemTable
     filterset_class = ItemFilter
@@ -61,33 +118,17 @@ class SKUDetailView(SingleTableMixin, DetailView):
     }
 
     def get_table_data(self):
-        return self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object)).qs
+        return self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object.sku)).qs
 
     def get_context_data(self, **kwargs):
-        context = super(SKUDetailView, self).get_context_data(**kwargs)
-        filter = self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object))
+        context = super(ItemDetailView, self).get_context_data(**kwargs)
+        filter = self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object.sku))
         context['location_id'] = self.request.GET.get('current_location')
         context['filter'] = filter
-        context['locations_inventory_list'] = Item.objects.filter(sku=self.object).values('current_location_id', 'current_location__name')\
+        context['locations_inventory_list'] = Item.objects.filter(sku=self.object.sku) \
+            .values('current_location_id', 'current_location__description') \
             .annotate(total=Count('current_location_id', distinct=False)).order_by('-total')
 
-        return context
-
-
-class SKUListView(SingleTableView):
-    model = SKU
-    template_name = 'dashboard/logistics/inventory/inventory_by_sku.html'
-    table_class = SkuInventoryTable
-    table_pagination = {
-        'per_page': 30
-    }
-
-    def get_context_data(self, **kwargs):
-        context = super(SKUListView, self).get_context_data(**kwargs)
-        context['total_items'] = Item.objects.all().count()
-        context['total_locations'] = Location.objects.all().count()
-        context['total_locations_in_use'] = Item.objects.all().values('current_location__id').distinct().count()
-        context['total_referencias'] = SKU.objects.count()
         return context
 
 
@@ -153,7 +194,7 @@ class TransferOrderDetailView(SingleTableView):
     }
 
     def get_queryset(self):
-        qs = TransferOrderItem.objects.filter(order_id =self.kwargs['id_order'])
+        qs = TransferOrderItem.objects.filter(order_id=self.kwargs['id_order'])
         return qs
 
     def get_context_data(self, **kwargs):
@@ -218,7 +259,6 @@ class TrackingTransfersView(TemplateView):
 class TrackingWarehouseView(TemplateView):
     template_name = 'dashboard/logistics/tracking/tracking_warehouse.html'
 
-
     def get_context_data(self, **kwargs):
         context = super(TrackingWarehouseView, self).get_context_data(**kwargs)
 
@@ -233,7 +273,7 @@ class TrackingWarehouseView(TemplateView):
         return context
 
 
-#Autocompletes
+# Autocompletes
 class SKUAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = SKU.objects.all()
@@ -247,4 +287,12 @@ class LocationAutocomplete(autocomplete.Select2QuerySetView):
         qs = Location.objects.all()
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
+        return qs
+
+
+class ItemAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Item.objects.all()
+        if self.q:
+            qs = qs.filter(display_name__istartswith=self.q)
         return qs

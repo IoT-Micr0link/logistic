@@ -1,0 +1,6 @@
+.env
+firebaseprivatekey.json
+init_db_proxy.sh
+pg_iot-demo.sql
+cloud_sql_proxy.linux.amd64
+data/

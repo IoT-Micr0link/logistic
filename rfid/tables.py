@@ -18,48 +18,73 @@ class TableBase(tables.Table):
 
 class SkuInventoryTable(TableBase):
     display_name = tables.Column(accessor='display_name', verbose_name="Descripción")
-    total_inventory = tables.Column(accessor='total_inventory', verbose_name="Total Inventario")
+    total_inventory = tables.Column(accessor='total_inventory', verbose_name="Total Inventario",
+                                    order_by='total_inventory')
     total_locations_inventory = tables.Column(accessor='total_locations_inventory', verbose_name="Por Bodegas")
-    detail = tables.LinkColumn('logistics:sku-detail', text="Ver Detalle", verbose_name="Ver Detalle",
-                               args=[A('id')])
+    review = tables.TemplateColumn(
+        template_name='dashboard/logistics/inventory/partials/reference_detail.html',
+        verbose_name='Detalle'
+    )
 
     class Meta(TableBase.Meta):
         model = SKU
-        fields = ('id', 'display_name', 'total_inventory', 'total_locations_inventory', 'detail')
+        fields = ('id', 'display_name', 'total_inventory', 'total_locations_inventory', 'review')
 
 
 class InventorySummaryTable(TableBase):
-    reference = tables.TemplateColumn(
-        template_name="dashboard/logistics/inventory/partials/item_reference_cell.html"
-        , verbose_name="Referencia")
-    # reference = tables.Column(accessor='sku', verbose_name="Referencia")
+    #epc = tables.TemplateColumn(
+    #    template_name="dashboard/logistics/inventory/partials/item_reference_cell.html",
+    #    verbose_name="Id Unidades")
+    reference = tables.Column(accessor='sku.display_name', verbose_name='Referencia')
+    total_inventario = tables.Column(accessor='sku.total_inventory', verbose_name='Total Inventario')
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
-    packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
     count = tables.Column(accessor='total_count', verbose_name="Cant")
     review = tables.TemplateColumn(
-        template_name="dashboard/logistics/inventory/partials/item_inventory_count_cell.html",
-        verbose_name="Revisar")
+        template_name='dashboard/logistics/inventory/partials/item_inventory_count_cell.html',
+        verbose_name='Revisar'
+    )
 
     class Meta(TableBase.Meta):
         model = InventorySummary
-        fields = ('reference', 'current_location', 'count', 'packing_unit', 'review')
+        order_by = 'reference'
+        fields = ('reference', 'current_location', 'total_inventario','count', 'packing_unit')
+
+
+class SKUDetailTable(TableBase):
+    id = tables.Column(accessor='sku_id', verbose_name='ID')
+    display_name = tables.Column(accessor='sku_description', verbose_name='Referencia')
+    location_description = tables.Column(accessor='location', verbose_name='Bodega')
+    total = tables.Column(accessor='total', verbose_name='Total Unidades')
+    detail = tables.TemplateColumn(
+        template_name='dashboard/logistics/inventory/partials/sku_detail.html',
+        verbose_name='Detalle'
+    )
+
+    class Meta(TableBase.Meta):
+         model = SKU
+    #    sequence = ('id', 'display_name', 'location_description', 'total')
+         fields = ('id', 'display_name')
 
 
 class ItemTable(TableBase):
-    serial = tables.Column(accessor='epc', verbose_name="Serial")
-    reference = tables.Column(accessor='sku.display_name', verbose_name="Referencia")
-    description = tables.Column(accessor='display_name', verbose_name="Descripción")
+    serial = tables.TemplateColumn(
+        verbose_name="Id Unidades",
+        template_name="dashboard/logistics/inventory/partials/item_reference_cell.html",)
+    reference = tables.Column(accessor='display_name', verbose_name='Referencia')
+    description = tables.Column(accessor="sku.data.description", verbose_name="Descripción")
+    unidad_recolectada = tables.Column(accessor="data.unidad_recolectada", verbose_name='Tipo Unidad')
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
     count = tables.Column(empty_values=(), verbose_name="Cant")
-    packing_unit = tables.Column(accessor='packing_unit', verbose_name="Unidad")
-    reading_icon = tables.TemplateColumn(
+    review = tables.TemplateColumn(
         template_name="dashboard/logistics/inventory/partials/item_read_icon_cell.html",
-        verbose_name="", orderable=False)
+        orderable=False, verbose_name='')
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location', 'reading_icon')
-        fields = ('reference', 'description', 'serial', 'count', 'packing_unit', 'current_location', 'reading_icon')
+        sequence = ('serial', 'reference', 'description', 'unidad_recolectada'
+                    , 'count', 'current_location', 'review')
+        fields = ('reference', 'description', 'serial', 'unidad_recolectada',
+                  'count', 'current_location', 'review')
 
     def render_count(self):
         return "1"

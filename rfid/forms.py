@@ -3,7 +3,6 @@ from rfid.view_models import *
 from dal import autocomplete
 
 
-
 class InventoryRequestForm(forms.ModelForm):
     class Meta:
         model = InventoryRequest
@@ -17,6 +16,33 @@ class InventoryRequestForm(forms.ModelForm):
             'all_locations': 'Todas las bodegas',
             'all_skus': 'Todas las referencias',
         }
+
+
+class SKUfilterForm(forms.ModelForm):
+    id_to = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Hasta referencia",
+                                   widget=autocomplete.ModelSelect2(
+                                       url='sku-autocomplete',
+                                       attrs={
+                                           'language': 'es',
+                                           'data-placeholder': 'Digite ...',
+                                           'data-minimum-input-length': 2,
+                                       },
+                                   )
+                                   )
+    id_from = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Desde referencia",
+                                     widget=autocomplete.ModelSelect2(
+                                         url='sku-autocomplete',
+                                         attrs={
+                                             'language': 'es',
+                                             'data-placeholder': 'Digite ...',
+                                             'data-minimum-input-length': 2,
+                                         },
+                                     )
+                                     )
+
+    class Meta:
+        model = SKU
+        fields = ['display_name']
 
 
 class InventorySummaryFilterForm(forms.Form):

@@ -22,6 +22,7 @@ urlpatterns = [
     #Autocomplete
     path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),
     path('autocomplete/locations/', rfid_views.LocationAutocomplete.as_view(), name='location-autocomplete'),
+    path('autocomplete/items', rfid_views.ItemAutocomplete.as_view(), name='item-autocomplete')
 
 ]
 

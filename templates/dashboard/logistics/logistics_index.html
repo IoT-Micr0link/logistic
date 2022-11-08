@@ -8,29 +8,52 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-accent-info">
-                    <div class="card-header">
-                        <span class="h2">Inventario <i class="fa fa-line-chart" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:sku-inventory' %}" role="button">Ver</a>
-                    </div>
-                    <div class="card-body">Items en inventario: {{ total_items }}</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card card-accent-info">
-                    <div class="card-header">
-                        <span class="h2">Entradas <i class="fa fa-arrow-circle-up" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:warehouse-entry-list' %}" role="button">Ver</a>
-                    </div>
-                    <div class="card-body">Texto por definir</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card card-accent-info">
-                    <div class="card-header">
-                        <span class="h2">Salidas <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right" href="{% url 'logistics:transfer-order-list' %}" role="button">Ver</a>
-                    </div>
-                    <div class="card-body">Texto por definir,</div>
+                        <div class="card-header">
+                            <span class="h2">Inventario <i class="fa fa-line-chart" aria-hidden="true"></i></span>
+                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:item-inventory' %}" role="button">Ver</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-1">
+                                    <div class="card overflow-hidden">
+                                        <div class="card-body p-0 d-flex align-items-center">
+                                            <div class="bg-gradient-dark p-2 mfe-2">
+                                                <svg class="c-icon c-icon-xl">
+                                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-qr-code"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7 align-items-center">
+                                                    <div class="text-muted text-uppercase font-weight-bold small">Total Unidades</div>
+                                                </div>
+                                                <div class="col-5 align-items-center">
+                                                    <div class="text-value text-info">{{total_items}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-1">
+                                    <div class="card overflow-hidden">
+                                        <div class="card-body p-0 d-flex align-items-center">
+                                            <div class="bg-gradient-dark p-2 mfe-2">
+                                                <svg class="c-icon c-icon-xl">
+                                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-folder"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7 align-items-center">
+                                                    <div class="text-muted text-uppercase font-weight-bold small">Total Referencias</div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="text-value text-info">{{total_sku}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -43,8 +66,90 @@
                     <div class="card-body">Texto por definir</div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="card card-accent-info">
+                        <div class="card-header">
+                            <span class="h2">Entradas<i class="fa fa-arrow-circle-up" aria-hidden="true"></i></span>
+                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:warehouse-entry-list' %}" role="button">Ver</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="card overflow-hidden">
+                                        <div class="card-body p-0 d-flex align-items-center">
+                                            <div class="bg-gradient-dark p-2 mfe-2">
+                                                <svg class="c-icon c-icon-xl">
+                                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-qr-code"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7 align-items-center">
+                                                    <div class="text-muted text-uppercase font-weight-bold small">Unidades Ingresadas</div>
+                                                </div>
+                                                <div class="col-5 aling-items-center">
+                                                    <div class="text-value text-info">{{total_warehouseentries}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-accent-info">
+                        <div class="card-header">
+                            <span class="h2">Salidas <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></span>
+                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:transfer-order-list' %}" role="button">Ver</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="card overflow-hidden">
+                                        <div class="card-body p-0 d-flex align-items-center">
+                                            <div class="bg-gradient-success p-2 mfe-3">
+                                                <svg class="c-icon c-icon-xl">
+                                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-qr-code"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <div class="text-muted text-uppercase font-weight-bold small">Unidades enviadas</div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="text-value text-info">{{total_transferitems}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card overflow-hidden">
+                                        <div class="card-body p-0 d-flex align-items-center">
+                                            <div class="bg-gradient-warning p-2 mfe-3">
+                                                <svg class="c-icon c-icon-xl">
+                                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-av-timer"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <div class="text-muted text-uppercase font-weight-bold small">Salidas en alistamiento</div>
+                                                </div>
+                                                <div class="col=4">
+                                                    <div class="text-value text-info">{{total_inprogress_orders}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- /.row-->
+        </div>
+            </div>
         </div>
   </div>
 </main>

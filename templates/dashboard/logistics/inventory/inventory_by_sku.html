@@ -2,71 +2,37 @@
 {% load django_tables2 %}
 {% load static %}
 {% block child %}
+{% load widget_tweaks %}
 <main class="c-main">
     <div class="container-fluid">
         <div class="fade-in">
             <div class="row">
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card overflow-hidden">
-                        <div class="card-body p-0 d-flex align-items-center">
-                            <div class="bg-gradient-dark p-4 mfe-3">
-                                <svg class="c-icon c-icon-xl">
-                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-qr-code"></use>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-value text-info">{{total_items}}</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Total Unidades</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.col-->
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card overflow-hidden">
-                        <div class="card-body p-0 d-flex align-items-center">
-                            <div class="bg-gradient-dark p-4 mfe-3">
-                                <svg class="c-icon c-icon-xl">
-                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-folder"></use>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-value text-info">{{total_referencias}}</div>
-                                <div class="text-muted text-uppercase font-weight-bold small">Total referencias</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.col-->
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card overflow-hidden">
-                        <div class="card-body p-0 d-flex align-items-center">
-                            <div class="bg-gradient-dark p-4 mfe-3">
-                                <svg class="c-icon c-icon-xl">
-                                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-house"></use>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="row">
-                                    <div class="col-5">
-                                        <div class="text-value text-info">{{total_locations}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold small">Bodegas &nbsp; Disponibles</div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white font-weight-bold"> Filtrar Inventario</div>
+                        {% if filter  %}
+                           <div class="card-body">
+                                <form action="" method="get">
+                                    <div class="w-100">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>{{ form.id_from.label_tag }}
+                                                </label><br>
+                                                {{ form.id_from  }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>{{ form.id_to.label_tag }}
+                                                </label><br>
+                                                {{ form.id_to }}
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-3"><input type="submit" class="btn btn-success" value="Filtrar"></div>
                                     </div>
-                                    <div class="col-5">
-                                        <div class="text-value text-info">{{total_locations_in_use}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold small">Bodegas en uso</div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                                </form>
+                           </div>
+                        {% endif %}
                     </div>
                 </div>
-                <!-- /.col-->
-            </div>
-            <!-- /.row-->
-
-            <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body p-0">
@@ -79,4 +45,11 @@
         </div>
   </div>
 </main>
+
+{% endblock %}
+
+{% block load_after %}
+
+{{ form.media }}
+
 {% endblock %}

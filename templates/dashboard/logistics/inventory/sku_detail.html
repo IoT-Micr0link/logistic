@@ -2,22 +2,22 @@
 {% load django_tables2 %}
 {% load static %}
 {% block child %}
-<main class="c-main">
+<main class="main pt-2">
     <div class="container-fluid">
         <div class="fade-in">
             <div class="row">
-                <div class="col-sm-12 col-md-8">
+                <div class="col-sm-12 col-md-9">
                     <div class="card card-accent-info">
-                        <div class="card-header h3">{{sku_object.display_name}}</div>
+                        <div class="card-header h3">{{object.display_name}}</div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-4">
-                                    <img src="{{ sku_object.reference_image.url }}" class="img-fluid"/>
+                                    <img src="{{ object.reference_image.url }}" class="img-fluid"/>
 
                                 </div>
                                 <div class="col-8">
                                     <table class="table table-responsive-sm table-bordered">
-                                    {% for key, values in sku_object.data.items %}
+                                    {% for key, values in object.data.items %}
                                         <tr>
                                             <td>{{key}}</td>
                                             <td>{{values}}</td>
@@ -26,7 +26,7 @@
                                     {%if sku_object.datasheet %}
                                         <tr>
                                             <td>datasheet</td>
-                                            <td><a class="btn btn-outline-success" href="{{ sku_object.datasheet.url }}"
+                                            <td><a class="btn btn-outline-success" href="{{ object.datasheet.url }}"
                                                 role="button" target="_blank">Descargar</a></td>
                                         </tr>
                                     {% endif%}
@@ -37,8 +37,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-4">
-                    <div class="card card-accent-info">
+                <div class="col-sm-12 col-md-3">
+                    <!---<div class="card card-accent-info">
                         <div class="card-header h3">Existencias</div>
                         <div class="card-body p-0 pt-1">
                             <table class="table">
@@ -59,13 +59,12 @@
                             {%endfor%}
                             </table>
                         </div>
-                    </div>
+                    </div>--->
                 </div>
             </div>
 
 
             <div class="row">
-                {% if filter and filter.data %}
                     <div class="col-md-12">
                         <div class="card card-accent-info">
                             <div class="card-header h3 mb-0">Unidades ({{ table.data | length }})</div>
@@ -74,9 +73,7 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
             </div>
-            <!-- /.row-->
         </div>
   </div>
 </main>

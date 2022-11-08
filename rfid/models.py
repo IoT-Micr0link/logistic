@@ -2,7 +2,6 @@
 
 from django.db import models
 from datetime import date, timedelta
-from django.contrib.postgres.fields import HStoreField
 from django.utils import timezone
 from django.conf import settings
 
@@ -25,10 +24,10 @@ class Sites(models.Model):
 class SKU(models.Model):
     display_name = models.CharField(max_length=200)
     datasheet = models.FileField(null=True, blank=True)
-    data = HStoreField(null=True, blank=True)
+    data = models.JSONField(null=True, blank=True)
 
     def __str__(self):
-        return self.display_name
+        return f'<{self.id}> {self.display_name}'
 
     @property
     def total_inventory(self):
@@ -60,12 +59,15 @@ class Item(models.Model):
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
     display_name = models.CharField(max_length=200)
-    data = HStoreField(null=True, blank=True)
+    data = models.JSONField(null=True, blank=True)
     sku = models.ForeignKey(SKU, null=True, on_delete=models.PROTECT)
     in_transit = models.BooleanField(default=False)
     image = models.ImageField(null=True)
     packing_unit = models.ForeignKey(PackingUnit, null=True, blank=True, on_delete=models.PROTECT)
     origin_site = models.ForeignKey(Sites, null=True, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"<{self.epc}> {self.display_name}"
 
     @property
     def age(self):

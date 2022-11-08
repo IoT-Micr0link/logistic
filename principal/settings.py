@@ -95,11 +95,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': '127.0.0.1',
+            'HOST': os.getenv('DATABASE_HOST', 'localhost'),
             'PORT': '5432',
-            'NAME': 'iot-demo',
-            'USER': 'iot_app_user',
-            'PASSWORD': 'tkGcbOC2w8x3tos1',
+            'NAME': os.getenv('DATABASE_NAME', 'logistic'),
+            'USER': os.getenv('DATABASE_USER', 'logistic'),
+            'PASSWORD': os.getenv('DATABASE_PASSWORD', 'logistic')
         }
     }
 

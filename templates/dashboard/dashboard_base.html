@@ -4,7 +4,7 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
   <div class="c-sidebar-brand d-lg-down-none">
     <a href='{% url "index" %}'>
-        <img src="{% static 'assets/img/logo/microlink-white.png' %}" alt="" width="100%">
+        <img src="{% static 'assets/img/logo/microlink-new.png' %}" alt="" width="100%">
     </a>
   </div>
   <ul class="c-sidebar-nav ps ps--active-y" data-dropdown-accordion="true">
@@ -17,9 +17,9 @@
             </svg>Inventario Físico
         </a>
         <ul class="c-sidebar-nav-dropdown-items">
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-sku' %}"> Por Artículo </a></li>
-            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-location' %}"> Por Bodega </a></li>
-
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory' %}"> Articulos </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:inventory-sku' %}"> Referencias </a></li>
+            <!---<li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-location' %}"> Por Bodega </a></li>-->
         </ul>
     </li>
 
@@ -64,7 +64,7 @@
 
 
       <li class="c-header-nav-item dropdown"><a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          <div class="c-avatar"><img class="c-avatar-img" src="{% static 'assets/img/logo/microlink-square.png' %}" alt="user@email.com"></div>
+          <div class="c-avatar"><img class="c-avatar-img" src="{% static 'assets/img/logo/favicon.png' %}" alt="user@email.com"></div>
         </a>
         <div class="dropdown-menu dropdown-menu-right pt-0">
           <div class="dropdown-header bg-light py-2"><strong>Ajustes</strong></div>

@@ -30,7 +30,7 @@ def reading_zones_summary(request):
     items = Item.objects.all().values_list('epc', flat=True)  # This is not efficent
     time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
     data = LastReadingsSnapshot.objects.filter(
-        timestamp_reading__gte=time_threshold,
+        #timestamp_reading__gte=time_threshold,
         epc__in=items
     ).values('antenna', 'antenna__name') \
         .annotate(total=Count('antenna')).order_by('total')

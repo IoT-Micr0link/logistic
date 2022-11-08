@@ -4,13 +4,14 @@ from django.urls import path
 from . import views as rfid_views
 
 urlpatterns = [
-    path('inventory/items-inventory-sku/', rfid_views.ItemInventoryView.as_view(),
-         name='item-inventory-sku'),
+    path('inventory/', rfid_views.ItemListView.as_view(), name='item-inventory'),
+    path('inventory/sku/', rfid_views.SKUInventoryView.as_view(),
+         name='inventory-sku'),
     path('inventory/items-inventory-location/', rfid_views.LocationInventoryView.as_view(),
          name='item-inventory-location'),
+    path('inventory/<int:pk>/sku_detail/', rfid_views.SKUDetailView.as_view(), name='sku_detail'),
 
-    path('inventory/skus/', rfid_views.SKUListView.as_view(), name='sku-inventory'),
-    path('inventory/skus/<int:pk>/detail/', rfid_views.SKUDetailView.as_view(), name='sku-detail'),
+    path('inventory/<str:pk>/detail/', rfid_views.ItemDetailView.as_view(), name='item-detail'),
     path('transfer-orders/', rfid_views.TransferOrderListView.as_view(),
          name='transfer-order-list'),
     path('transfer-orders/<int:id_order>/detail/',

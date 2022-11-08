@@ -1,6 +1,5 @@
 from django_filters import FilterSet, filters
 from rfid.models import *
-from rfid.view_models import InventorySummary
 
 
 class ItemFilter(FilterSet):
@@ -10,6 +9,15 @@ class ItemFilter(FilterSet):
     class Meta:
         model = Item
         fields = ('sku', 'current_location', 'last_seen_action')
+
+
+class SKUFilter(FilterSet):
+    id_from = filters.NumberFilter(field_name='id', lookup_expr='gte')
+    id_to = filters.NumberFilter(field_name='id', lookup_expr='lte')
+
+    class Meta:
+        model = SKU
+        fields = {'id'}
 
 
 class InventorySummaryFilter(FilterSet):
@@ -35,7 +43,7 @@ class InventorySummaryFilter(FilterSet):
             return queryset
 
     class Meta:
-        model = InventorySummary
+        model = SKU
         fields = ('sku_id', 'sku_id_from', 'sku_id_to', 'all_skus',
                   'location_id', 'location_id_from', 'location_id_to', 'all_locations',)
 

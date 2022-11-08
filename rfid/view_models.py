@@ -7,6 +7,7 @@ from django.conf import settings
 
 
 class InventorySummary(models.Model):
+    epc = models.IntegerField()
     sku = models.ForeignKey(SKU, on_delete=models.DO_NOTHING)
     current_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
     packing_unit = models.ForeignKey(PackingUnit, on_delete=models.DO_NOTHING)
@@ -15,7 +16,7 @@ class InventorySummary(models.Model):
     class Meta:
         managed = False
         db_table = 'inventory_summary'
-        ordering = ['sku']
+        ordering = ['epc']
 
     @property
     def total_missing(self):
@@ -28,7 +29,7 @@ class InventorySummary(models.Model):
         base_qs = Item.objects.filter(
             Q(last_seen_timestamp__lte=time_threshold) | ~Q(last_seen_location=self.current_location),
             sku=self.sku,
-            packing_unit=self.packing_unit,
+            #packing_unit=self.packing_unit,
             current_location=self.current_location
         )
 
@@ -43,7 +44,7 @@ class InventorySummary(models.Model):
             ~Q(current_location=self.current_location),
             last_seen_timestamp__gte=time_threshold,
             sku=self.sku,
-            packing_unit=self.packing_unit,
+            #packing_unit=self.packing_unit,
             last_seen_location=self.current_location
         )
         return base_qs.count() or 0
