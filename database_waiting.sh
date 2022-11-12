@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo 'waiting for database...'
 
 while ! nc -z $DATABASE_HOST 5432; do
@@ -5,4 +7,5 @@ while ! nc -z $DATABASE_HOST 5432; do
 done
 
 echo "database started"
+
 exec "$@"
