@@ -9,5 +9,6 @@ urlpatterns = [
     path('reading-zones-snapshot/', rfid_func_views.reading_zones_summary, name='reading-zones-snapshot'),
     path('transfer-order-coordinates/', rfid_func_views.transfer_order_coordinates,
          name='transfer-order-coordinates'),
-    path('reading-missing-items/', rfid_func_views.missing_items_readings, name='reading-missing-items')
+    path('reading-missing-items/', rfid_func_views.missing_items_readings, name='reading-missing-items'),
+    path('readings/zebra/', rfid_func_views.test_rfid_readings, name='readings-zebra')
 ]

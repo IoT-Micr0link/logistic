@@ -13,6 +13,7 @@ SECRET_KEY = '+4)%8jk1j*&hozv$vp(-c)(c(4%dr3b#yig7zcbh96gqj-vydc'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 

@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.urls import path, include
 from iot import views as iot_views
 from rfid import views as rfid_views
-from rest_api import urls as rest_api_urls
 from django.conf import settings
 from django.conf.urls.static import static
 

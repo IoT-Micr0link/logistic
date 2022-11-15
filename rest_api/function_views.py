@@ -1,7 +1,13 @@
+from datetime import datetime
+
 from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.response import Response
+
 from rfid.view_models import *
 from django.db.models import Count
 
+from rest_framework.decorators import api_view
 
 # this views should be a REST API in the future, consider using DRF
 
@@ -74,3 +80,23 @@ def transfer_order_coordinates(request):
         return JsonResponse({}, safe=False, status=404)
 
     return JsonResponse(response, safe=False, status=200)
+
+
+@api_view(['POST'])
+def test_rfid_readings(request):
+    print(request.data)
+    data = request.data
+    timestamp = datetime.fromtimestamp(data.get('timestamp'))
+    readings = data.get('readings', [])
+    reads = [
+        Reading(
+            epc=read,
+            antenna_id=data.get('antenna'),
+            node_id=data.get('node_id'),
+            reader_id=data.get('reader_id', 1),
+            timestamp_reading=timestamp
+        )
+        for read in readings
+    ]
+    Reading.objects.bulk_create(reads)
+    return Response(data, status=status.HTTP_200_OK)
