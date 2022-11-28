@@ -218,7 +218,6 @@ function fetchAndUpdateData(){
 
      $.getJSON( '{% url "rest_api:reading-missing-items" %}', function( data ) {
       var items = data.data;
-      console.log(data)
       $('#missingItemsTable').empty();
       $.each( items, function( index, val ) {
            $('#missingItemsTable').append(

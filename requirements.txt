@@ -10,3 +10,4 @@ sqlparse==0.4.3
 django-extensions
 Werkzeug==2.2.2
 xlrd
+ipython

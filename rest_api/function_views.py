@@ -12,16 +12,15 @@ from rest_framework.decorators import api_view
 # this views should be a REST API in the future, consider using DRF
 
 
+@api_view(['GET'])
 def missing_items_readings(request):
-    time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+    time_threshold = datetime.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
 
     data = LastReadingsSnapshot.objects.filter(
         timestamp_reading__lt=time_threshold
     ).select_related('sku').select_related('antenna')
 
-    response = {
-        "data": []
-    }
+    response = {"data": []}
     for row in data:
         try:
             response["data"].append(
@@ -29,22 +28,21 @@ def missing_items_readings(request):
             )
         except Exception as e:
             print("could not add missing", row.epc)  # this shlud be ussing logging
-    return JsonResponse(response, safe=False)
+    return Response(response)
 
 
+@api_view(['GET'])
 def reading_zones_summary(request):
     items = Item.objects.all().values_list('epc', flat=True)  # This is not efficent
     time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
     data = LastReadingsSnapshot.objects.filter(
-        #timestamp_reading__gte=time_threshold,
+        timestamp_reading__gte=time_threshold,
         epc__in=items
     ).values('antenna', 'antenna__name') \
         .annotate(total=Count('antenna')).order_by('total')
 
     # {'antenna': 1, 'antenna__name': 'AL200-Z1', 'total': 51}
-    response = {
-        "data": []
-    }
+    response = {"data": []}
     for row in data:
         try:
             response["data"].append(
@@ -53,7 +51,7 @@ def reading_zones_summary(request):
         except Exception as e:
             print("could not add reading", row.epc)  # this should be use logging
 
-    return JsonResponse(response, safe=False)
+    return Response(response)
 
 
 def transfer_order_coordinates(request):
@@ -84,19 +82,17 @@ def transfer_order_coordinates(request):
 
 @api_view(['POST'])
 def test_rfid_readings(request):
-    print(request.data)
-    data = request.data
-    timestamp = datetime.fromtimestamp(data.get('timestamp'))
-    readings = data.get('readings', [])
+    readings = request.data
+    reader = Reader.objects.first()
     reads = [
         Reading(
-            epc=read,
-            antenna_id=data.get('antenna'),
-            node_id=data.get('node_id'),
-            reader_id=data.get('reader_id', 1),
-            timestamp_reading=timestamp
+            epc=read.get('data').get('idHex'),
+            antenna_id=1,  # read.get('data').get('antenna', ReaderAntenna.objects.first().id),
+            node_id=read.get('node', Node.objects.first().id),
+            reader_id=reader.id,
+            timestamp_reading=datetime.now()
         )
         for read in readings
     ]
     Reading.objects.bulk_create(reads)
-    return Response(data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_200_OK)
