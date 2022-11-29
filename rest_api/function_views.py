@@ -27,13 +27,13 @@ def missing_items_readings(request):
                 {'sku': row.sku.display_name, 'antenna_name': row.antenna.name, 'serial': row.epc}
             )
         except Exception as e:
-            print("could not add missing", row.epc)  # this shlud be ussing logging
+            print("could not add missing", row.epc)  # this should be using logging
     return Response(response)
 
 
 @api_view(['GET'])
 def reading_zones_summary(request):
-    items = Item.objects.all().values_list('epc', flat=True)  # This is not efficent
+    items = Item.objects.all().values_list('epc', flat=True)  # This is not efficient
     time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
     data = LastReadingsSnapshot.objects.filter(
         timestamp_reading__gte=time_threshold,
