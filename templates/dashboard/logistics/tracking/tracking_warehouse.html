@@ -198,32 +198,32 @@ function paintInitialPolygons(){
 
 }
 
-function updatePolygon(element){
-    console.log(element)
-  document.getElementById('totalId'+(element.antenna)).innerHTML = element.total
-  window["zoneRFID" + (element.antenna)].set('text',(element.total+ " tags"));
-  window["zoneRFIDFloor" + (element.antenna)].set('text',(element.total+ " tags"));
+function updatePolygon(antenna, total){
+    console.log(antenna, total)
+  document.getElementById('totalId'+(antenna)).innerHTML = total
+  window["zoneRFID" + (antenna)].set('text',(total+ " tags"));
+  window["zoneRFIDFloor" + (antenna)].set('text',(total+ " tags"));
   canvasFloor.requestRenderAll();
   canvas.requestRenderAll();
 }
 
 function fetchAndUpdateData(){
 
-    fetch(URL='{% url "rest_api:reading-zones-snapshot" %}')
-        .then(response => response.json())
-        .then(data => {
-            data.data.forEach(element => {
-                updatePolygon(element)
-            })
-        })
+    //fetch(URL='{% url "rest_api:reading-zones-snapshot" %}')
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        data.data.forEach(element => {
+    //            updatePolygon(element)
+    //        })
+    //    })
 
-    //$.getJSON( '{% url "rest_api:reading-zones-snapshot" %}', function( data ) {
-    //  var items = data.data;
-    //  $.each( items, function( index, val ) {
-    //      updatePolygon(val.antenna,val.total)
-    //      $("#totalId"+(index+1)).html(val.total );
-    //  });
-    //});
+    $.getJSON( '{% url "rest_api:reading-zones-snapshot" %}', function( data ) {
+      var items = data.data;
+      $.each( items, function( index, val ) {
+          updatePolygon(val.antenna,val.total)
+          $("#totalId"+(index+1)).html(val.total );
+      });
+    });
 
      $.getJSON( '{% url "rest_api:reading-missing-items" %}', function( data ) {
       var items = data.data;
@@ -241,6 +241,6 @@ function fetchAndUpdateData(){
 
 setTimeout(paintInitialPolygons,1000)
 
-setInterval(fetchAndUpdateData,10000)
+setInterval(fetchAndUpdateData,1100)
 </script>
 {% endblock %}

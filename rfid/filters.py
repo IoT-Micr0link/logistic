@@ -11,6 +11,15 @@ class ItemFilter(FilterSet):
         fields = ('sku', 'current_location', 'last_seen_action')
 
 
+class ItemListFilter(FilterSet):
+    id_from = filters.NumberFilter(field_name='epc', lookup_expr='gte')
+    id_to = filters.NumberFilter(field_name='epc', lookup_expr='lte')
+
+    class Meta:
+        model = Item
+        fields = {'epc'}
+
+
 class SKUFilter(FilterSet):
     id_from = filters.NumberFilter(field_name='id', lookup_expr='gte')
     id_to = filters.NumberFilter(field_name='id', lookup_expr='lte')

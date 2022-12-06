@@ -8,3 +8,4 @@ cloud_sql_proxy.linux.amd64
 data/
 init_db_proxy.sh
 .python-version
+media/

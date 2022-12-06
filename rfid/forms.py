@@ -45,6 +45,38 @@ class SKUfilterForm(forms.ModelForm):
         fields = ['display_name']
 
 
+class ItemFilterForm(forms.ModelForm):
+    id_to = forms.ModelChoiceField(
+        queryset=Item.objects.all(),
+        required=False,
+        label="Hasta referencia",
+        widget=autocomplete.ModelSelect2(
+           url='item-autocomplete',
+           attrs={
+               'language': 'es',
+               'data-placeholder': 'Digite ...',
+               'data-minimum-input-length': 2,
+           },
+       )
+    )
+    id_from = forms.ModelChoiceField(
+        queryset=Item.objects.all(), required=False,
+        label="Desde referencia",
+        widget=autocomplete.ModelSelect2(
+            url='item-autocomplete',
+            attrs={
+                'language': 'es',
+                'data-placeholder': 'Digite ...',
+                'data-minimum-input-length': 2,
+            },
+        )
+    )
+
+    class Meta:
+        model = Item
+        fields = ['display_name']
+
+
 class InventorySummaryFilterForm(forms.Form):
     sku_id_from = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Desde referencia",
                                          widget=autocomplete.ModelSelect2(

@@ -37,6 +37,35 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
+                        <div class="card-header bg-dark text-white font-weight-bold"> Filtrar Inventario</div>
+                        {% if filter  %}
+                           <div class="card-body">
+                                <form action="" method="get">
+                                    <div class="w-100">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>{{ form.id_from.label_tag }}
+                                                </label><br>
+                                                {{ form.id_from  }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>{{ form.id_to.label_tag }}
+                                                </label><br>
+                                                {{ form.id_to }}
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-3"><input type="submit" class="btn btn-success" value="Filtrar"></div>
+                                    </div>
+                                </form>
+                           </div>
+                        {% endif %}
+                        </div>
+                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
                         <div class="card-body p-0">
                         {% render_table table %}
                         </div>
@@ -47,4 +76,9 @@
         </div>
   </div>
 </main>
+{% endblock %}
+{% block load_after %}
+
+{{ form.media }}
+
 {% endblock %}

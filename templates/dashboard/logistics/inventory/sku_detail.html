@@ -23,7 +23,7 @@
                                             <td>{{values}}</td>
                                         </tr>
                                     {% endfor %}
-                                    {%if sku_object.datasheet %}
+                                    {%if object.datasheet %}
                                         <tr>
                                             <td>datasheet</td>
                                             <td><a class="btn btn-outline-success" href="{{ object.datasheet.url }}"
@@ -37,8 +37,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-3">
-                    <!---<div class="card card-accent-info">
+                <!---<div class="col-sm-12 col-md-3">
+                    <div class="card card-accent-info">
                         <div class="card-header h3">Existencias</div>
                         <div class="card-body p-0 pt-1">
                             <table class="table">
@@ -59,8 +59,8 @@
                             {%endfor%}
                             </table>
                         </div>
-                    </div>--->
-                </div>
+                    </div>
+                </div>-->
             </div>
 
 

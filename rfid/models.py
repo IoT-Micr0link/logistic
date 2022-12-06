@@ -23,6 +23,7 @@ class Sites(models.Model):
 
 class SKU(models.Model):
     display_name = models.CharField(max_length=200)
+    reference_image = models.ImageField(null=True)
     datasheet = models.FileField(null=True, blank=True)
     data = models.JSONField(null=True, blank=True)
 

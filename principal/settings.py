@@ -153,4 +153,4 @@ MEDIA_URL = "/media/"
 
 # RFID Reading cycle
 # Defines the  interval de reader is updating data in minutes
-RFID_READING_CYCLE = 60
+RFID_READING_CYCLE = 5

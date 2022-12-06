@@ -50,7 +50,7 @@ class SKUDetailView(SingleTableMixin, DetailView):
                         'sku_id', 'sku__display_name') \
                 .annotate(sku_description=F('sku__display_name'),
                           location_id=F('current_location_id'),
-                          location=F('current_location__description'),
+                          location=F('current_location__name'),
                           total=Count('current_location_id',
                                       distinct=False)).order_by('-total')
         else:
@@ -93,17 +93,25 @@ class ItemListView(SingleTableView):
     model = Item
     template_name = 'dashboard/logistics/inventory/inventory_by_item.html'
     table_class = ItemTable
+    filterset_class = ItemListFilter
+    filterset_form = ItemFilterForm
     table_pagination = {
         'per_page': 30
     }
 
     def get_table_data(self):
-        return Item.objects.all().order_by('epc')
+        #return Item.objects.all().order_by('epc')
+        return self.filterset_class(self.request.GET, queryset=Item.objects.all()).qs
 
     def get_context_data(self, **kwargs):
         context = super(ItemListView, self).get_context_data(**kwargs)
         context['total_locations'] = Location.objects.all().count()
-        context['total_locations_in_use'] = Item.objects.all().values('current_location__id').distinct().count()
+        context['form'] = self.filterset_form(self.request.GET or None)
+        context['filter'] = self.filterset_class(
+            self.filterset_class(self.request.GET, queryset=Item.objects.all())
+        )
+        context['total_locations_in_use'] = \
+            Item.objects.all().values('current_location__id').distinct().count()
         return context
 
 
@@ -118,7 +126,12 @@ class ItemDetailView(SingleTableMixin, DetailView):
     }
 
     def get_table_data(self):
-        return self.filterset_class(self.request.GET, queryset=Item.objects.filter(sku=self.object.sku)).qs
+        return self.filterset_class(
+            self.request.GET,
+            queryset=Item.objects.filter(
+                sku=self.object.sku
+            ).exclude(epc=self.object.epc)
+        ).qs
 
     def get_context_data(self, **kwargs):
         context = super(ItemDetailView, self).get_context_data(**kwargs)
@@ -126,8 +139,9 @@ class ItemDetailView(SingleTableMixin, DetailView):
         context['location_id'] = self.request.GET.get('current_location')
         context['filter'] = filter
         context['locations_inventory_list'] = Item.objects.filter(sku=self.object.sku) \
-            .values('current_location_id', 'current_location__description') \
-            .annotate(total=Count('current_location_id', distinct=False)).order_by('-total')
+            .exclude(epc=self.object.epc) \
+            .values('current_location_id', 'current_location__name') \
+            .annotate(total=Count('current_location_id', distinct=True)).order_by('-total')
 
         return context
 

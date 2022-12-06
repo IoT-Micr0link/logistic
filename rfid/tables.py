@@ -62,17 +62,16 @@ class SKUDetailTable(TableBase):
 
     class Meta(TableBase.Meta):
          model = SKU
-    #    sequence = ('id', 'display_name', 'location_description', 'total')
-         fields = ('id', 'display_name')
+         sequence = ('id', 'display_name', 'location_description', 'total')
+         fields = ('id', 'display_name', 'detail', 'total', 'location_description')
 
 
 class ItemTable(TableBase):
     serial = tables.TemplateColumn(
-        verbose_name="Id Unidades",
+        verbose_name="EPC",
         template_name="dashboard/logistics/inventory/partials/item_reference_cell.html",)
     reference = tables.Column(accessor='display_name', verbose_name='Referencia')
-    description = tables.Column(accessor="sku.data.description", verbose_name="Descripción")
-    unidad_recolectada = tables.Column(accessor="data.unidad_recolectada", verbose_name='Tipo Unidad')
+    packing = tables.Column(accessor='packing_unit__name', verbose_name='Packing')
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
     count = tables.Column(empty_values=(), verbose_name="Cant")
     review = tables.TemplateColumn(
@@ -81,10 +80,12 @@ class ItemTable(TableBase):
 
     class Meta(TableBase.Meta):
         model = Item
-        sequence = ('serial', 'reference', 'description', 'unidad_recolectada'
-                    , 'count', 'current_location', 'review')
-        fields = ('reference', 'description', 'serial', 'unidad_recolectada',
-                  'count', 'current_location', 'review')
+        sequence = (
+            'serial', 'reference', 'packing','count', 'current_location', 'review'
+        )
+        fields = (
+            'reference', 'packing', 'serial', 'count', 'current_location', 'review'
+        )
 
     def render_count(self):
         return "1"
