@@ -84,7 +84,7 @@
 let canvas = new fabric.Canvas('canvas');
 let canvasFloor = new fabric.Canvas('canvas-floor');
 
-fabric.Image.fromURL('{% static "assets/img/backgrounds/bg.jpg" %}', function(img){
+fabric.Image.fromURL('{% static "assets/img/backgrounds/bodega1.jpeg" %}', function(img){
    img.scaleToWidth(canvas.width);
    img.scaleToHeight(canvas.height);
    canvas.setBackgroundImage(img);
@@ -103,11 +103,11 @@ function paintInitialPolygons(){
       zones : [
           {
               name:1,
-              points:[{x: 21, y: 433},{x: 121, y: 327},{x: 300, y: 334},{x: 257, y: 452}]
+              points:[{x: 600, y: 130},{x: 600, y: 560},{x: 275, y: 430},{x: 275, y: 190}]
           },
           {
               name:2,
-              points:[{x: 193, y: 241},{x: 148, y: 284},{x: 258, y: 303},{x: 306, y: 292},{x: 307, y: 180},{x: 263, y: 176},{x: 263, y: 243}]
+              points:[{x: 150, y: 210},{x: 148, y: 375},{x: 275, y: 428},{x: 275, y: 188}]
           },
       ]
   }
@@ -117,7 +117,7 @@ function paintInitialPolygons(){
   polyStrokeColors =["rgba(21,232,91,1)","rgb(255,7,7)"]
 
   texts = ["0 tags", "0 tags"]
-  texts_loc = [{x: 170, y: 390},{x: 253, y: 271}];
+  texts_loc = [{x: 415, y: 300},{x: 210, y: 290}];
 
 
   for (var i = 0; polys.zones.length > i; i++){
