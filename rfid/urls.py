@@ -22,5 +22,7 @@ urlpatterns = [
          rfid_views.WarehouseEntryDetailView.as_view(), name='warehouse-entry-detail'),
     path('transfer-orders-tracking/', rfid_views.TrackingTransfersView.as_view(), name='tracking-transfer-orders'),
     path('warehouse-tracking/', rfid_views.TrackingWarehouseView.as_view(), name='tracking-warehouse'),
+    path('rfid/readers', rfid_views.ReadersListView.as_view(), name='rfid-readers'),
+    path('rfid/readings', rfid_views.ReadingsListView.as_view(), name='rfid-readings')
 ]
 

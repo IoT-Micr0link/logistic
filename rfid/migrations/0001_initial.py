@@ -234,7 +234,7 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
             create or replace view  inventory_summary as select row_number() OVER ()
-            as id, sku_id , last_seen_location_id, packing_unit_id, count(*) from rfid_item
+            as id, sku_id , last_seen_location_id, packing_unit_id, count(*) as total_count from rfid_item
             group by sku_id, packing_unit_id, last_seen_location_id
             """
         ),

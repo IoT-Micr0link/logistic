@@ -12,10 +12,10 @@
                       <div class="card-header text-white bg-gray-500">Tiempo Real</div>
                       <div class="card-body p-3 d-flex align-items-center">
                         <div>
-                            <div class="text-value "><strong> Items:</strong> <h3><span id="item-count"></span></h3></div>
-                            <div class="text-value "><strong> Nodo: </strong><span id="node-name"> NODE-BODEGA-134</span></div>
-                            <div class="text-value "><strong> Dispositivo: </strong><span id="reader-name">ZEBRA - FX9600</span></div>
-                            <div class="text-value "><strong> Tiemestamp: </strong><span id="timestamp"> - </span></div>
+                            <div class="text-value "><strong> Items:</strong> <h3><span id="item-count">{{items_count}}</span></h3></div>
+                            <div class="text-value "><strong> Nodo: </strong><span id="node-name">{{location.name}}</span></div>
+                            <div class="text-value "><strong> Dispositivo: </strong><span id="reader-name">{{reader.name}}</span></div>
+                            <div class="text-value "><strong> Tiemestamp: </strong><span id="timestamp">{{timestamp}}</span></div>
                         </div>
                       </div>
                     </div>
@@ -37,11 +37,19 @@
   </div>
 </main>
 {% endblock %}
+{% block load_after %}
+<script>
+    function reload_page() {
+        console.log('Reloaded')
+        window.location.reload()
+    }
+    setInterval(3000, reload_page)
+</script>
+{% endblock %}
 
 {% block extra_js%}
 <script defer src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/7.9.1/firebase-auth.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/7.9.1/firebase-database.js"></script>
-
 <script defer src="{% static 'assets/js/realtime-readings.js' %}"></script>
 {% endblock%}

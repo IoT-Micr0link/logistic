@@ -8,7 +8,7 @@
     </a>
   </div>
   <ul class="c-sidebar-nav ps ps--active-y" data-dropdown-accordion="true">
-    <li class="c-sidebar-nav-title">Logística inversa</li>
+    <li class="c-sidebar-nav-title">Logística</li>
 
     <li class="c-sidebar-nav-dropdown">
         <a class="c-sidebar-nav-dropdown-toggle">
@@ -19,7 +19,7 @@
         <ul class="c-sidebar-nav-dropdown-items">
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory' %}"> Articulos </a></li>
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:inventory-sku' %}"> Referencias </a></li>
-            <!---<li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-location' %}"> Por Bodega </a></li>-->
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:item-inventory-location' %}"> Por Bodega </a></li>
         </ul>
     </li>
 
@@ -32,6 +32,18 @@
         <ul class="c-sidebar-nav-dropdown-items">
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:warehouse-entry-list' %}"> Entradas </a></li>
             <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:transfer-order-list' %}"> Salidas </a></li>
+        </ul>
+    </li>
+
+    <li class="c-sidebar-nav-dropdown">
+        <a class="c-sidebar-nav-dropdown-toggle">
+            <svg class="c-sidebar-nav-icon">
+                <use xlink:href="{% static 'vendor/core-ui/icons/sprites/free.svg' %}#cil-devices"></use>
+            </svg> RFID
+        </a>
+        <ul class="c-sidebar-nav-dropdown-items">
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:rfid-readers' %}"> Readers </a></li>
+            <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{% url 'logistics:rfid-readings' %}"> Lecturas </a></li>
         </ul>
     </li>
 

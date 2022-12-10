@@ -7,16 +7,15 @@ from django.conf import settings
 
 
 class InventorySummary(models.Model):
-    epc = models.IntegerField()
     sku = models.ForeignKey(SKU, on_delete=models.DO_NOTHING)
-    current_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    last_seen_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
     packing_unit = models.ForeignKey(PackingUnit, on_delete=models.DO_NOTHING)
     total_count = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'inventory_summary'
-        ordering = ['epc']
+        ordering = ['sku']
 
     @property
     def total_missing(self):

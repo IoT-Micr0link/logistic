@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.views.generic import DetailView, TemplateView
 from django_tables2 import SingleTableView, SingleTableMixin
 from rfid.tables import *
@@ -154,8 +156,15 @@ class ReadingsListView(SingleTableView):
         'per_page': 30
     }
 
+    def get_table_data(self):
+        return Reading.objects.all().distinct('epc')
+
     def get_context_data(self, **kwargs):
         context = super(ReadingsListView, self).get_context_data(**kwargs)
+        context['items_count'] = Reading.objects.distinct('epc').count()
+        context['location'] = Location.objects.first()
+        context['reader'] = Reader.objects.first()
+        context['timestamp'] = datetime.now().isoformat()
         return context
 
 
