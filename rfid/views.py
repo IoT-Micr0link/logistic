@@ -246,6 +246,7 @@ class TransferOrderDetailView(SingleTableView):
 
 
 class CreateTransferOrder(CreateView):
+    template_name = 'dashboard/logistics/transfers/modals/create_transfer_order.html'
     form_class = CreateTransferOrderForm
 
 

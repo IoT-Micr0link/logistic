@@ -25,7 +25,7 @@ class CreateTransferOrderForm(forms.ModelForm):
         required=True,
         label='Items a transferir',
         widget=autocomplete.ModelSelect2(
-            url='items-autocomplete',
+            url='item-autocomplete',
             attrs={
                 'language': 'es',
                 'data-placeholder': 'Digite ...',

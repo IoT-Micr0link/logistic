@@ -82,21 +82,60 @@ def transfer_order_coordinates(request):
 
 @api_view(['POST'])
 def test_rfid_readings(request):
+    actions = {
+        1: 'READ',
+        2: 'OUT',
+        3: 'READ'
+    }
     readings = request.data
     reader = Reader.objects.first()
-    reads = [
-        Reading(
-            epc=read.get('data').get('idHex'),
-            antenna_id=(
-                ReaderAntenna.objects.filter(
-                    serial_number=read.get('data').get('antenna')
-                ).first().id or 1
-            ),
-            node_id=read.get('node', Node.objects.first().id),
-            reader_id=reader.id,
-            timestamp_reading=datetime.now()
+    reads = []
+    now = datetime.now()
+    for read in readings:
+        item = Item.objects.filter(epc=read.get('data').get('idHex')).first()
+        if not item:
+            return
+        antenna = ReaderAntenna.objects.filter(
+            serial_number=read.get('data').get('antenna')
+        ).first()
+        match antenna.id:
+            case 1 | 3:
+                item.last_seen_timestamp = now
+                item.last_seen_action = 'READ'
+                item.save()
+            case 2:
+                update_transfer_order(item, now)
+
+
+        reads.append(
+            Reading(
+                epc=read.get('data').get('idHex'),
+                antenna_id=antenna.id,
+                node_id=read.get('node', Node.objects.first().id),
+                reader_id=reader.id,
+                timestamp_reading=now,
+                action=actions.get(antenna.id)
+            )
         )
-        for read in readings
-    ]
     Reading.objects.bulk_create(reads)
     return Response(status=status.HTTP_200_OK)
+
+
+def update_transfer_order(item, current_time):
+    transfer_item = TransferOrderItem.objects.filter(item=item).first()
+    if not transfer_item:
+        return
+    order = transfer_item.order
+    transfer_item.state = 'AL'
+    transfer_item.save()
+    if not order.transferorderitem_set.filter(state__in=['RE', 'NOE']).exists():
+        order.state = 'CO'
+        order.actual_completion_date = current_time
+        order.save()
+
+    item.last_seen_timestamp = current_time
+    item.last_seen_location = None
+    item.in_transit = True
+    item.save()
+
+

@@ -1,17 +1,31 @@
-{% load django_tables2 %}
 {% load static %}
 {% load widget_tweaks %}
-<div id="create_transferorder" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-lg">
+<div id="create_transfer_order" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-body card-body p-0">
-        {% if form %}
-          {{ form }}
-        {% endif %}
+      <div class="modal-body">
+        {% csrf_token %}
+        {{ form.non_field_erros }}
+        <div class="form-group">
+        {% for field in form %}
+            <div class="form-group">
+                {% if field.errors %}
+                <ul class="form-errors">
+                    {% for error in field.errors %}
+                    <li><span class="fa fa-exclamation-triangle"></span><strong>{{ error|escape }}</strong></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}<div class="form-helptext">{{ field.helptext }}</div>{% endif %}
+            </div>
+        {% endfor %}
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-info" data-dismiss="modal">Close
         </button>
+        <input type="submit" class="btn btn-primary" value="Create" style="margin-bottom: 5px"/>
       </div>
     </div>
   </div>
