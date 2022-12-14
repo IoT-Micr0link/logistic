@@ -94,7 +94,7 @@ def test_rfid_readings(request):
     for read in readings:
         item = Item.objects.filter(epc=read.get('data').get('idHex')).first()
         if not item:
-            return
+            return Response(status=status.HTTP_404_NOT_FOUND)
         antenna = ReaderAntenna.objects.filter(
             serial_number=read.get('data').get('antenna')
         ).first()
@@ -123,15 +123,14 @@ def test_rfid_readings(request):
 
 def update_transfer_order(item, current_time):
     transfer_item = TransferOrderItem.objects.filter(item=item).first()
-    if not transfer_item:
-        return
-    order = transfer_item.order
-    transfer_item.state = 'AL'
-    transfer_item.save()
-    if not order.transferorderitem_set.filter(state__in=['RE', 'NOE']).exists():
-        order.state = 'CO'
-        order.actual_completion_date = current_time
-        order.save()
+    if transfer_item:
+        order = transfer_item.order
+        transfer_item.state = 'AL'
+        transfer_item.save()
+        if not order.transferorderitem_set.filter(state__in=['RE', 'NOE']).exists():
+            order.state = 'CO'
+            order.actual_completion_date = current_time
+            order.save()
 
     item.last_seen_timestamp = current_time
     item.last_seen_location = None
