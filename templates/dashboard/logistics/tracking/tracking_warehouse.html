@@ -106,7 +106,7 @@ function paintInitialPolygons(){
               points:[{x: 600, y: 130},{x: 600, y: 560},{x: 275, y: 430},{x: 275, y: 190}]
           },
           {
-              name:2,
+              name:3,
               points:[{x: 150, y: 210},{x: 148, y: 375},{x: 275, y: 428},{x: 275, y: 188}]
           },
       ]
@@ -158,7 +158,7 @@ function paintInitialPolygons(){
               points:[{x: 315, y: 305},{x: 515, y: 305},{x: 515, y: 481},{x: 315, y: 481}]
           },
           {
-              name:2,
+              name:3,
               points:[{x: 100, y: 305},{x: 300, y: 305},{x: 300, y: 481},{x: 100, y: 481}]
           },
       ]
@@ -221,7 +221,7 @@ function fetchAndUpdateData(){
       var items = data.data;
       $.each( items, function( index, val ) {
           updatePolygon(val.antenna,val.total)
-          $("#totalId"+(index+1)).html(val.total );
+          $("#totalId"+(val.antenna)).html(val.total );
       });
     });
 

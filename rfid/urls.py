@@ -14,6 +14,7 @@ urlpatterns = [
     path('inventory/<str:pk>/detail/', rfid_views.ItemDetailView.as_view(), name='item-detail'),
     path('transfer-orders/', rfid_views.TransferOrderListView.as_view(),
          name='transfer-order-list'),
+    path('transfer-orders-create/', rfid_views.CreateTransferOrder.as_view(), name='inventory-create_transfer_order'),
     path('transfer-orders/<int:id_order>/detail/',
          rfid_views.TransferOrderDetailView.as_view(), name='transfer-order-detail'),
     path('warehouse-entries/', rfid_views.WarehouseEntryListView.as_view(),
@@ -22,7 +23,7 @@ urlpatterns = [
          rfid_views.WarehouseEntryDetailView.as_view(), name='warehouse-entry-detail'),
     path('transfer-orders-tracking/', rfid_views.TrackingTransfersView.as_view(), name='tracking-transfer-orders'),
     path('warehouse-tracking/', rfid_views.TrackingWarehouseView.as_view(), name='tracking-warehouse'),
-    path('rfid/readers', rfid_views.ReadersListView.as_view(), name='rfid-readers'),
-    path('rfid/readings', rfid_views.ReadingsListView.as_view(), name='rfid-readings')
+    path('rfid/readers/', rfid_views.ReadersListView.as_view(), name='rfid-readers'),
+    path('rfid/readings/', rfid_views.ReadingsListView.as_view(), name='rfid-readings')
 ]
 

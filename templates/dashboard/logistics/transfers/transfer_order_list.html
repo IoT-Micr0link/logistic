@@ -7,6 +7,14 @@
     <div class="container-fluid">
         <div class="fade-in">
             <div class="row">
+                <div class="col-9 col-lg-10"></div>
+                <div class="col-3 col-lg-2">
+                    <div class="form-group mx-4 d-inline-block">
+                        <input id="create" class="btn btn-info" type="submit" value="Crear Orden"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="card overflow-hidden">
                         <div class="card-body p-0 d-flex align-items-center">
@@ -96,4 +104,17 @@
         </div>
   </div>
 </main>
+{% block load_after %}
+<script>
+  $(document).on("click", "#create", function (e) {
+    e.preventDefault();
+    var $popup = $("#create_transferorder");
+    var popup_url = {% url 'logistics:inventory-create_transfer_order' %};
+    $(".modal-body", $popup).load(popup_url, function () {
+      $popup.modal("show");
+    });
+  });
+</script>
+{% endblock %}
+{% include "dashboard/logistics/transfers/modals/create_transfer_order.html" %}
 {% endblock %}

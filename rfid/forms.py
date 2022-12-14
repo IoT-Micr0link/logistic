@@ -18,6 +18,31 @@ class InventoryRequestForm(forms.ModelForm):
         }
 
 
+class CreateTransferOrderForm(forms.ModelForm):
+
+    items = forms.ModelChoiceField(
+        queryset=Item.objects.all(),
+        required=True,
+        label='Items a transferir',
+        widget=autocomplete.ModelSelect2(
+            url='items-autocomplete',
+            attrs={
+                'language': 'es',
+                'data-placeholder': 'Digite ...',
+                'data-minimum-input-length': 2,
+            }
+        )
+    )
+
+    class Meta:
+        model = TransferOrder
+        fields = ['destination', 'expected_completion_date', 'items']
+        labels = {
+            'destination': 'Bodega o estanteria de destino',
+            'expected_completion_date': 'Fecha esperada'
+        }
+
+
 class SKUfilterForm(forms.ModelForm):
     id_to = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Hasta referencia",
                                    widget=autocomplete.ModelSelect2(

@@ -1,11 +1,14 @@
 from datetime import datetime
 
-from django.views.generic import DetailView, TemplateView
-from django_tables2 import SingleTableView, SingleTableMixin
+from django.views.generic import DetailView, TemplateView, CreateView
+from django_tables2 import SingleTableView, SingleTableMixin, LazyPaginator
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+
 from rfid.tables import *
 from rfid.filters import *
 from rfid.forms import *
-from django.db.models import Count, F
+from django.db.models import Count, F, OuterRef, Exists
 
 
 class SKUInventoryView(SingleTableView):
@@ -156,12 +159,20 @@ class ReadingsListView(SingleTableView):
         'per_page': 30
     }
 
-    def get_table_data(self):
-        return Reading.objects.all().distinct('epc')
+    def get_queryset(self):
+        return Reading.objects.annotate(
+            exists=Exists(
+                Item.objects.filter(epc=OuterRef('epc'))
+            )
+        ).exclude(exists=False).filter(
+            timestamp_reading__gte=(
+                datetime.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+            )
+        )
 
     def get_context_data(self, **kwargs):
         context = super(ReadingsListView, self).get_context_data(**kwargs)
-        context['items_count'] = Reading.objects.distinct('epc').count()
+        context['items_count'] = self.get_queryset().distinct('epc').count()
         context['location'] = Location.objects.first()
         context['reader'] = Reader.objects.first()
         context['timestamp'] = datetime.now().isoformat()
@@ -232,6 +243,10 @@ class TransferOrderDetailView(SingleTableView):
         context['enlisted_items_per'] = enlisted_items_per
 
         return context
+
+
+class CreateTransferOrder(CreateView):
+    form_class = CreateTransferOrderForm
 
 
 class WarehouseEntryListView(SingleTableView):

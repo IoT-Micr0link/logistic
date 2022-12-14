@@ -87,7 +87,11 @@ def test_rfid_readings(request):
     reads = [
         Reading(
             epc=read.get('data').get('idHex'),
-            antenna_id=1,  # read.get('data').get('antenna', ReaderAntenna.objects.first().id),
+            antenna_id=(
+                ReaderAntenna.objects.filter(
+                    serial_number=read.get('data').get('antenna')
+                ).first().id or 1
+            ),
             node_id=read.get('node', Node.objects.first().id),
             reader_id=reader.id,
             timestamp_reading=datetime.now()
