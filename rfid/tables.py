@@ -32,13 +32,13 @@ class SkuInventoryTable(TableBase):
 
 
 class InventorySummaryTable(TableBase):
-    #epc = tables.TemplateColumn(
-    #    template_name="dashboard/logistics/inventory/partials/item_reference_cell.html",
-    #    verbose_name="Id Unidades")
-    reference = tables.Column(accessor='sku.display_name', verbose_name='Referencia')
-    total_inventario = tables.Column(accessor='sku.total_inventory', verbose_name='Total Inventario')
-    current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
-    count = tables.Column(accessor='total_count', verbose_name="Cant")
+    reference = tables.TemplateColumn(
+        verbose_name='Referencia',
+        template_name="dashboard/logistics/inventory/partials/item_reference_cell.html"
+    )
+    display_name = tables.Column(verbose_name='Nombre', accessor='sku.display_name')
+    last_seen_location = tables.Column(accessor='last_seen_location.name', verbose_name="Bodega")
+    total_count = tables.Column(accessor='total_count', verbose_name="Total Inventario")
     review = tables.TemplateColumn(
         template_name='dashboard/logistics/inventory/partials/item_inventory_count_cell.html',
         verbose_name='Revisar'
@@ -47,7 +47,7 @@ class InventorySummaryTable(TableBase):
     class Meta(TableBase.Meta):
         model = InventorySummary
         order_by = 'reference'
-        fields = ('reference', 'current_location', 'total_inventario','count', 'packing_unit')
+        fields = ('reference', 'display_name', 'last_seen_location', 'total_count', 'review')
 
 
 class SKUDetailTable(TableBase):

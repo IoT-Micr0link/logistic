@@ -78,7 +78,7 @@ class Item(models.Model):
 
     @property
     def not_seen_recently(self):
-        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+        time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
         return self.last_seen_timestamp < time_threshold
 
 

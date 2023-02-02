@@ -1,4 +1,5 @@
 # These models are intended for database views
+
 from rfid.models import *
 from django.db.models import Q
 from datetime import timedelta
@@ -9,7 +10,6 @@ from django.conf import settings
 class InventorySummary(models.Model):
     sku = models.ForeignKey(SKU, on_delete=models.DO_NOTHING)
     last_seen_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
-    packing_unit = models.ForeignKey(PackingUnit, on_delete=models.DO_NOTHING)
     total_count = models.IntegerField()
 
     class Meta:
@@ -23,13 +23,12 @@ class InventorySummary(models.Model):
         # different location than expected, or that its last
         # reading was over 5 minutes ago.
 
-        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+        time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
 
         base_qs = Item.objects.filter(
-            Q(last_seen_timestamp__lte=time_threshold) | ~Q(last_seen_location=self.current_location),
+            Q(last_seen_timestamp__lte=time_threshold) | ~Q(last_seen_location=self.last_seen_location),
             sku=self.sku,
-            #packing_unit=self.packing_unit,
-            current_location=self.current_location
+            current_location=self.last_seen_location
         )
 
         return base_qs.count() or 0
@@ -37,22 +36,15 @@ class InventorySummary(models.Model):
     @property
     def total_extra(self):
         # extra items are those that were read in the current location but belong to another
-        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+        time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
 
         base_qs = Item.objects.filter(
-            ~Q(current_location=self.current_location),
+            ~Q(current_location=self.last_seen_location),
             last_seen_timestamp__gte=time_threshold,
             sku=self.sku,
-            #packing_unit=self.packing_unit,
-            last_seen_location=self.current_location
+            last_seen_location=self.last_seen_location
         )
         return base_qs.count() or 0
-
-    def save(self, *args, **kwargs):
-        return
-
-    def delete(self, *args, **kwargs):
-        return
 
 
 class LastReadingsSnapshot(models.Model):
@@ -67,9 +59,3 @@ class LastReadingsSnapshot(models.Model):
     class Meta:
         managed = False
         db_table = 'last_readings_snapshot'
-
-    def save(self, *args, **kwargs):
-        return
-
-    def delete(self, *args, **kwargs):
-        return

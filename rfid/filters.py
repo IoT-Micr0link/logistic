@@ -33,9 +33,9 @@ class InventorySummaryFilter(FilterSet):
     sku_id = filters.NumberFilter(field_name='sku_id')
     sku_id_from = filters.NumberFilter(field_name='sku_id', lookup_expr='gte')
     sku_id_to = filters.NumberFilter(field_name='sku_id', lookup_expr='lte')
-    location_id = filters.NumberFilter(field_name='current_location_id')
-    location_id_from = filters.NumberFilter(field_name='current_location_id', lookup_expr='gte')
-    location_id_to = filters.NumberFilter(field_name='current_location_id', lookup_expr='lte')
+    location_id = filters.NumberFilter(field_name='last_seen_location_id')
+    location_id_from = filters.NumberFilter(field_name='last_seen_location_id', lookup_expr='gte')
+    location_id_to = filters.NumberFilter(field_name='last_seen_location_id', lookup_expr='lte')
     all_locations = filters.CharFilter(field_name='all_locations', method='filter_all_locations')
     all_skus = filters.CharFilter(field_name='all_skus', method='filter_all_skus')
 

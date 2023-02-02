@@ -9,3 +9,5 @@ data/
 init_db_proxy.sh
 .python-version
 media/
+datasheets
+images

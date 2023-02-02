@@ -146,8 +146,7 @@ class ItemDetailView(SingleTableMixin, DetailView):
         context['locations_inventory_list'] = Item.objects.filter(sku=self.object.sku) \
             .exclude(epc=self.object.epc) \
             .values('current_location_id', 'current_location__name') \
-            .annotate(total=Count('current_location_id', distinct=True)).order_by('-total')
-
+            .annotate(total=Count('current_location_id')).order_by('-total')
         return context
 
 
@@ -302,7 +301,7 @@ class TrackingWarehouseView(TemplateView):
         context = super(TrackingWarehouseView, self).get_context_data(**kwargs)
 
         items = Item.objects.all().values_list('epc', flat=True)  # This is not efficient
-        time_threshold = timezone.now() - timedelta(minutes=settings.RFID_READING_CYCLE)
+        time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
 
         context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.filter(
             timestamp_reading__gte=time_threshold,

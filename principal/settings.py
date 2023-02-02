@@ -152,5 +152,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
 # RFID Reading cycle
-# Defines the  interval de reader is updating data in minutes
-RFID_READING_CYCLE = 5
+# Defines the  interval de reader is updating data in seconds
+RFID_READING_CYCLE = 30
