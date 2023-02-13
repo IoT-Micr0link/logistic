@@ -1,9 +1,7 @@
 from datetime import datetime
 
 from django.views.generic import DetailView, TemplateView, CreateView
-from django_tables2 import SingleTableView, SingleTableMixin, LazyPaginator
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
+from django_tables2 import SingleTableView, SingleTableMixin
 
 from rfid.tables import *
 from rfid.filters import *
@@ -304,10 +302,11 @@ class TrackingWarehouseView(TemplateView):
         time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
 
         context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.filter(
-            timestamp_reading__gte=time_threshold,
-            epc__in=items
-        ).values('antenna', 'antenna__name') \
-            .annotate(total=Count('antenna')).order_by('total')
+            epc__in=items,
+            antenna_id__in=[1, 3],
+        ).values('antenna', 'antenna__name').annotate(
+            total=Count('antenna', filter=Q(timestamp_reading__gte=time_threshold))
+        ).order_by('total')
         return context
 
 

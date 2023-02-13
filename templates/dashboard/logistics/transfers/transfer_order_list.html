@@ -10,10 +10,14 @@
                 <div class="col-9 col-lg-10"></div>
                 <div class="col-3 col-lg-2">
                     <div class="form-group mx-4 d-inline-block">
-                        <input id="create" class="btn btn-info" type="button" value="Crear Orden"/>
+                        <input id="create" class="btn btn-info" type="button"
+                               data-bs-toggle="modal" data-bs-target="#create_transfer_order"
+                               value="Crear Orden"
+                        />
+                        {% include "dashboard/logistics/transfers/modals/create_transfer_order.html" %}
                     </div>
                 </div>
-            </div>-->
+            </div>--->
             <div class="row">
                 <div class="col-6 col-lg-4">
                     <div class="card overflow-hidden">
@@ -104,19 +108,18 @@
         </div>
   </div>
 </main>
-{% include "dashboard/logistics/transfers/modals/create_transfer_order.html" %}
 {% endblock %}
 {% block load_after %}
 <script>
-  $(document).ready(function(){
-    $(document).on("click", "#create", function (e) {
-        e.preventDefault();
-        var $popup = $("#create_transfer_order");
-        var popup_url = "{% url 'logistics:inventory-create_transfer_order' %}";
-        $(".modal-body", $popup).load(popup_url, function () {
-          $popup.modal({show: true})
-        });
-    });
-  })
+  //$(document).ready(function(){
+  //  $(document).on("click", "#create", function (e) {
+  //      e.preventDefault();
+        //var $popup = $("#create_transfer_order");
+        //var popup_url = "{% url 'logistics:inventory-create_transfer_order' %}";
+        //$(".modal-body", $popup).load(popup_url, function () {
+        //  $popup.modal({show: true})
+        //});
+  //  });
+  //})
 </script>
 {% endblock %}

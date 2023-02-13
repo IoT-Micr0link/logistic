@@ -7,7 +7,7 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-        context['total_items'] = Item.objects.all().count()
+        context['total_items'] = Item.objects.filter(last_seen_action='READ').count()
         context['total_sku'] = SKU.objects.all().count()
         context['total_warehouseentries'] = WarehouseEntry.objects.all().count()
         context['total_transferitems'] = TransferOrderItem.objects.all().count()

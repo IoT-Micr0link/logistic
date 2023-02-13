@@ -9,8 +9,6 @@ from django.db.models import Count
 
 from rest_framework.decorators import api_view
 
-# this views should be a REST API in the future, consider using DRF
-
 
 @api_view(['GET'])
 def missing_items_readings(request):
@@ -36,10 +34,13 @@ def reading_zones_summary(request):
     items = Item.objects.all().values_list('epc', flat=True)  # This is not efficient
     time_threshold = datetime.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
     data = LastReadingsSnapshot.objects.filter(
-        timestamp_reading__gte=time_threshold,
-        epc__in=items
-    ).values('antenna', 'antenna__name') \
-        .annotate(total=Count('antenna')).order_by('total')
+        epc__in=items,
+        antenna_id__in=[1, 3],
+    ).values(
+        'antenna', 'antenna__name'
+    ).annotate(
+        total=Count('antenna', filter=Q(timestamp_reading__gte=time_threshold))
+    ).order_by('total')
 
     # {'antenna': 1, 'antenna__name': 'AL200-Z1', 'total': 51}
     response = {"data": []}
@@ -133,7 +134,7 @@ def update_transfer_order(item, current_time):
             order.save()
 
     item.last_seen_timestamp = current_time
-    item.last_seen_location = None
+    item.last_seen_action = 'OUT'
     item.in_transit = True
     item.save()
 

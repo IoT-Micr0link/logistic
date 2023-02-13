@@ -45,7 +45,7 @@
                                 </tr>
                             </thead>
                         {%for row in reading_summary_snapshot %}
-                            <tbody>
+                            <tbody id="readings-table" class="font-sm">
                                 <tr>
                                     <td>{{row.antenna__name}}</td>
                                     <td id="totalId{{row.antenna}}">{{row.total}}</td>
@@ -207,19 +207,11 @@ function updatePolygon(antenna, total){
 
 function fetchAndUpdateData(){
 
-    //fetch(URL='{% url "rest_api:reading-zones-snapshot" %}')
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        data.data.forEach(element => {
-    //            updatePolygon(element)
-    //        })
-    //    })
-
     $.getJSON( '{% url "rest_api:reading-zones-snapshot" %}', function( data ) {
       var items = data.data;
       $.each( items, function( index, val ) {
-          updatePolygon(val.antenna, val.total)
           $("#totalId"+(val.antenna)).html(val.total);
+          updatePolygon(val.antenna, val.total)
       });
     });
 
