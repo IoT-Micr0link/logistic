@@ -1,7 +1,7 @@
 """RFID Models"""
 
 from django.db import models
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django.utils import timezone
 from django.conf import settings
 
@@ -142,7 +142,7 @@ class TransferOrder(models.Model):
         ('CO', 'Entregado')
     )
     destination = models.ForeignKey(Location, on_delete=models.PROTECT)
-    expected_completion_date = models.DateField(null=True, blank=True)
+    expected_completion_date = models.DateField()
     actual_completion_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=3, choices=STATE, default='RE')
 
@@ -174,7 +174,10 @@ class TransferOrderItem(models.Model):
 
     @property
     def last_out_reading(self):
-        return Reading.objects.filter(epc=self.item.epc, action='OUT').order_by('-timestamp_reading').first()
+        return Reading.objects.filter(
+            epc=self.item.epc,
+            action='OUT'
+        ).order_by('-timestamp_reading').first()
 
     class Meta:
         unique_together = ('order', 'item')

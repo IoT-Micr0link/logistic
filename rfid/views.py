@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.views.generic import DetailView, TemplateView, CreateView
 from django_tables2 import SingleTableView, SingleTableMixin
 
@@ -245,6 +247,13 @@ class TransferOrderDetailView(SingleTableView):
 class CreateTransferOrder(CreateView):
     template_name = 'dashboard/logistics/transfers/modals/create_transfer_order.html'
     form_class = CreateTransferOrderForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if not form.is_valid():
+            return HttpResponse()
+        form.save()
+        return redirect(to='logistics:transfer-order-list')
 
 
 class WarehouseEntryListView(SingleTableView):

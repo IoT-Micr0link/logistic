@@ -20,18 +20,12 @@ class InventoryRequestForm(forms.ModelForm):
 
 class CreateTransferOrderForm(forms.ModelForm):
 
-    items = forms.ModelChoiceField(
-        queryset=Item.objects.all(),
-        required=True,
+    items = forms.ModelMultipleChoiceField(
+        queryset=Item.objects.filter(
+            last_seen_action='READ'
+        ).exclude(transferorderitem__isnull=False),
+        required=False,
         label='Items a transferir',
-        widget=autocomplete.ModelSelect2(
-            url='item-autocomplete',
-            attrs={
-                'language': 'es',
-                'data-placeholder': 'Digite ...',
-                'data-minimum-input-length': 2,
-            }
-        )
     )
 
     class Meta:
@@ -42,28 +36,45 @@ class CreateTransferOrderForm(forms.ModelForm):
             'expected_completion_date': 'Fecha esperada'
         }
 
+    def save(self, commit=True):
+        items = self.cleaned_data.pop('items')
+        transfer_order = super(CreateTransferOrderForm, self).save(commit)
+        _items = [
+            TransferOrderItem(item=item, order=transfer_order)
+            for item in items
+        ]
+        TransferOrderItem.objects.bulk_create(_items)
+        return transfer_order.id
+
 
 class SKUfilterForm(forms.ModelForm):
-    id_to = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Hasta referencia",
-                                   widget=autocomplete.ModelSelect2(
-                                       url='sku-autocomplete',
-                                       attrs={
-                                           'language': 'es',
-                                           'data-placeholder': 'Digite ...',
-                                           'data-minimum-input-length': 2,
-                                       },
-                                   )
-                                   )
-    id_from = forms.ModelChoiceField(queryset=SKU.objects.all(), required=False, label="Desde referencia",
-                                     widget=autocomplete.ModelSelect2(
-                                         url='sku-autocomplete',
-                                         attrs={
-                                             'language': 'es',
-                                             'data-placeholder': 'Digite ...',
-                                             'data-minimum-input-length': 2,
-                                         },
-                                     )
-                                     )
+    id_to = forms.ModelChoiceField(
+        queryset=SKU.objects.all(),
+        required=False,
+        label="Hasta referencia",
+        widget=autocomplete.ModelSelect2(
+            url='sku-autocomplete',
+            attrs={
+               'language': 'es',
+               'data-placeholder': 'Digite ...',
+               'data-minimum-input-length': 2,
+            },
+        )
+    )
+
+    id_from = forms.ModelChoiceField(
+        queryset=SKU.objects.all(),
+        required=False,
+        label="Desde referencia",
+        widget=autocomplete.ModelSelect2(
+            url='sku-autocomplete',
+            attrs={
+                'language': 'es',
+                'data-placeholder': 'Digite ...',
+                'data-minimum-input-length': 2,
+            },
+        )
+    )
 
     class Meta:
         model = SKU

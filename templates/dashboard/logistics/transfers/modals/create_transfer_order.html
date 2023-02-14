@@ -1,37 +1,40 @@
 {% load static %}
 {% load widget_tweaks %}
-<div id="create_transfer_order" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Crear Orden de transferencia</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="" method="POST">
-            <div class="modal-body">
-                {% csrf_token %}
-                {{ form.non_field_erros }}
-                <div class="form-group">
-                {% for field in form %}
-                    <div class="form-group">
-                        {% if field.errors %}
-                        <ul class="form-errors">
-                            {% for error in field.errors %}
-                            <li><span class="fa fa-exclamation-triangle"></span><strong>{{ error|escape }}</strong></li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                        {{ field.label_tag }} {{ field }}
-                        {% if field.help_text %}<div class="form-helptext">{{ field.helptext }}</div>{% endif %}
-                    </div>
+
+<div class="modal-body">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group mx-4 mb-2">
+        <label class="mr-2">{{form.destination.label_tag}}</label>
+        {{ form.destination|add_class:"form-control info"}}
+        {% if form.destination.help_text %}
+            <div class="form-helptext">{{ form.destination.helptext }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group mx-4 mb-2">
+        <label for="expected_completion_date" class="mr-2">{{form.expected_completion_date.label_tag}}</label>
+        <input type="date" name="expected_completion_date"  id="id_expected_completion_date" class="form-control">
+        {% if form.expected_completion_date.help_text %}
+            <div class="form-helptext">{{ form.expected_completion_date.helptext }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group mx-4 mb-2">
+        <label for="items" class="mr-2">{{form.items.label_tag}}</label>
+        {{ form.items|add_class:"form-control info"}}
+        {% if form.items.help_text %}
+            <div class="form-helptext">{{ form.items.helptext }}</div>
+        {% endif %}
+    </div>
+    {% for field in form %}
+        <div class="form-group">
+            {% if field.errors %}
+            <ul class="form-errors">
+                {% for error in field.errors %}
+                <li><span class="fa fa-exclamation-triangle"></span><strong>{{ error|escape }}</strong></li>
                 {% endfor %}
-                </div>
-            </div>
-        </form>
-    </div>
-        <div class="modal-footer">
-            <input type="submit" class="btn btn-primary" value="Crear" style="margin-bottom: 5px"/>
+            </ul>
+            {% endif %}
         </div>
+    {% endfor %}
     </div>
-  </div>
 </div>

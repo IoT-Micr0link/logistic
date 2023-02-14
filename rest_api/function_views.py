@@ -107,7 +107,6 @@ def test_rfid_readings(request):
             case 2:
                 update_transfer_order(item, now)
 
-
         reads.append(
             Reading(
                 epc=read.get('data').get('idHex'),
@@ -126,8 +125,10 @@ def update_transfer_order(item, current_time):
     transfer_item = TransferOrderItem.objects.filter(item=item).first()
     if transfer_item:
         order = transfer_item.order
+        order.state = 'IP'
         transfer_item.state = 'AL'
         transfer_item.save()
+        order.save()
         if not order.transferorderitem_set.filter(state__in=['RE', 'NOE']).exists():
             order.state = 'CO'
             order.actual_completion_date = current_time

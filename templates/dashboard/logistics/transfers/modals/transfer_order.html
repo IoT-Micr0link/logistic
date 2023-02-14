@@ -1,0 +1,19 @@
+{% load static %}
+{% load widget_tweaks %}
+<div id="create_transfer_order" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Crear Orden de transferencia</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action='{% url "logistics:inventory-create_transfer_order" %}' method="POST">
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary" value="Crear" style="margin-bottom: 5px"/>
+            </div>
+        </form>
+    </div>
+    </div>
+  </div>
+</div>
