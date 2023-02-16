@@ -10,6 +10,8 @@ class DashboardView(TemplateView):
         context['total_items'] = Item.objects.filter(last_seen_action='READ').count()
         context['total_sku'] = SKU.objects.all().count()
         context['total_warehouseentries'] = WarehouseEntry.objects.all().count()
-        context['total_transferitems'] = TransferOrderItem.objects.all().count()
-        context['total_inprogress_orders'] = TransferOrder.objects.filter(state='IP').count()
+        context['total_transferitems'] = TransferOrderItem.objects.filter(state='EN').count()
+        context['total_inprogress_orders'] = TransferOrder.objects.filter(
+            state__in='IP'
+        ).count()
         return context

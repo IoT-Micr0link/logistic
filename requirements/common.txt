@@ -12,3 +12,4 @@ Werkzeug==2.2.2
 xlrd
 ipython
 pdbpp
+requests

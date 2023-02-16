@@ -5,7 +5,7 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-group mx-4 mb-2">
-        <label class="mr-2">{{form.destination.label_tag}}</label>
+        <label for='destination' class="mr-2">{{form.destination.label_tag}}</label>
         {{ form.destination|add_class:"form-control info"}}
         {% if form.destination.help_text %}
             <div class="form-helptext">{{ form.destination.helptext }}</div>
