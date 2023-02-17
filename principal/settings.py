@@ -17,9 +17,15 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
-INSTALLED_APPS = [
+THIRD_PARTY_APPS = [
     'dal',
     'dal_select2',
+    'django_tables2',
+    'django_extensions',
+    'widget_tweaks'
+]
+
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,10 +35,17 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rfid.apps.RfidConfig',
     'rest_api.apps.RestApiConfig',
-    'django_tables2',
-    'django_extensions',
-    'widget_tweaks'
 ]
+
+APPS = [
+    'inventory.apps.InventoryConfig',
+    'warehouse.apps.WareHouseConfig',
+    'reports.apps.ReportsConfig',
+    'rfid.apps.RfidConfig',
+    'rest_api.apps.RestApiConfig',
+]
+
+INSTALLED_APPS = DJANGO_APPS + APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
