@@ -12,6 +12,6 @@ class DashboardView(TemplateView):
         context['total_warehouseentries'] = WarehouseEntry.objects.all().count()
         context['total_transferitems'] = TransferOrderItem.objects.filter(state='EN').count()
         context['total_inprogress_orders'] = TransferOrder.objects.filter(
-            state__in='IP'
+            state='IP'
         ).count()
         return context

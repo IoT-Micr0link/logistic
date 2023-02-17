@@ -126,7 +126,7 @@ def update_transfer_order(item, current_time):
     if transfer_item:
         order = transfer_item.order
         order.state = 'IP'
-        transfer_item.state = 'AL'
+        transfer_item.state = 'EN'
         transfer_item.save()
         order.save()
         if not order.transferorderitem_set.filter(state__in=['RE', 'NOE']).exists():
