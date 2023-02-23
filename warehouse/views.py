@@ -134,7 +134,9 @@ class TrackingWarehouseView(TemplateView):
         context['reading_summary_snapshot'] = LastReadingsSnapshot.objects.filter(
             epc__in=items,
             antenna_id__in=[1, 3],
-        ).values('antenna', 'antenna__name').annotate(
+        ).values(
+            'antenna', 'antenna__name', 'position', 'position__name'
+        ).annotate(
             total=Count('antenna', filter=Q(timestamp_reading__gte=time_threshold))
         ).order_by('total')
         return context

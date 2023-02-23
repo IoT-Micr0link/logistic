@@ -22,7 +22,7 @@ class Command(BaseCommand):
         try:
             while True:
                 events = generate_data()
-                requests.post('http://localhost:8000/rest_api/readings/zebra/', json=events)
+                requests.post('http://localhost:8000/api/readings/zebra/', json=events)
                 time.sleep(settings.RFID_READING_CYCLE)
         except KeyboardInterrupt:
             self.stdout.write(self.style.SUCCESS('Simulation ended'))

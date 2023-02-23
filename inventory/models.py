@@ -83,6 +83,9 @@ class Item(models.Model):
         related_name="current_items"
     )
     current_position = models.ForeignKey(Position, null=True, on_delete=models.PROTECT)
+    last_seen_position = models.ForeignKey(
+        Position, null=True, on_delete=models.PROTECT, related_name='last_items'
+    )
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
@@ -107,6 +110,10 @@ class Item(models.Model):
     def not_seen_recently(self):
         time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
         return self.last_seen_timestamp < time_threshold
+
+    @property
+    def change_position(self):
+        return self.current_position != self.last_seen_position
 
     class Meta:
         db_table = 'item'

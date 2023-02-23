@@ -10,5 +10,6 @@ urlpatterns = [
     path('transfer-order-coordinates/', rfid_func_views.transfer_order_coordinates,
          name='transfer-order-coordinates'),
     path('reading-missing-items/', rfid_func_views.missing_items_readings, name='reading-missing-items'),
+    path('items-movements/', rfid_func_views.item_movements, name='items-movements'),
     path('readings/zebra/', rfid_func_views.test_rfid_readings, name='readings-zebra')
 ]

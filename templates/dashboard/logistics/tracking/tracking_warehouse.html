@@ -47,7 +47,7 @@
                         {%for row in reading_summary_snapshot %}
                             <tbody id="readings-table" class="font-sm">
                                 <tr>
-                                    <td>{{row.position_name}}</td>
+                                    <td>{{row.position__name}}</td>
                                     <td id="totalId{{row.antenna}}">{{row.total}}</td>
                                 </tr>
                             </tbody>
@@ -70,6 +70,23 @@
                     </div>
                 </div>
 
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card-header h4 mb-0 border-top">Movimientos</div>
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Última posición</th>
+                                    <th>Posición Actual</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsMovements" class="font-sm"><!-- items movements --></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
   </div>
@@ -197,7 +214,6 @@ function paintInitialPolygons(){
 }
 
 function updatePolygon(antenna, total){
-    console.log(antenna, total)
     document.getElementById('totalId'+(antenna)).innerHTML = total
     window["zoneRFID" + (antenna)].set('text',(total+ " tags"));
     window["zoneRFIDFloor" + (antenna)].set('text',(total+ " tags"));
@@ -215,17 +231,29 @@ function fetchAndUpdateData(){
       });
     });
 
-     $.getJSON( '{% url "rest_api:reading-missing-items" %}', function( data ) {
-      var items = data.data;
-      $('#missingItemsTable').empty();
-      $.each( items, function( index, val ) {
-           $('#missingItemsTable').append(
-               '<tr>' +
-                '<td>'+ val.sku+ '<br/>' + val.serial + '</td> ' +
-                '<td>'+ val.position_name +'</td>' +
-               '</tr>'
-           );
-      });
+    $.getJSON( '{% url "rest_api:reading-missing-items" %}', function( data ) {
+    var items = data.data;
+    $('#missingItemsTable').empty();
+    $.each( items, function( index, val ) {
+       $('#missingItemsTable').append(
+           '<tr>' +
+            '<td>'+ val.sku+ '<br/>' + val.serial + '</td> ' +
+            '<td>'+ val.position_name +'</td>' +
+           '</tr>'
+       )});
+    });
+    $.getJSON( '{% url "rest_api:items-movements" %}', function( data ) {
+    var items = data;
+    $('#itemsMovements').empty();
+    $.each( items, function( index, val ) {
+        $('#itemsMovements').append(
+            '<tr>' +
+                '<td>'+ val.epc+ '<br/>' + val.display_name + '</td> ' +
+                '<td>'+ val.last_seen_position +'</td>' +
+                '<td>'+ val.current_position + '</td>' +
+            '</tr>'
+        );
+    });
     });
 }
 

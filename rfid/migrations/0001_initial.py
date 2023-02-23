@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
             create or replace view  last_readings_snapshot as
             select 
             reading.epc, reading.timestamp_reading, reading.antenna_id, reading.reader_id, reading.node_id,
-            item.sku_id, node.location_id, position.id
+            item.sku_id, node.location_id, position.id as position_id
             from reading
             left join item on reading.epc = item.epc
             left join node on reading.node_id = node.id

@@ -59,6 +59,23 @@ def reading_zones_summary(request):
     return Response(response)
 
 
+@api_view(['GET'])
+def item_movements(request):
+    movements = []
+    time_threshold = datetime.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
+    for item in Item.objects.filter(
+        last_seen_action='READ',
+        last_seen_timestamp__gt=time_threshold
+    ):
+        if item.change_position:
+            movements.append({
+                'epc': item.epc,
+                'display_name': item.display_name,
+                'last_seen_position': item.last_seen_position.name,
+                'current_position': item.current_position.name
+            })
+    return Response(movements)
+
 def transfer_order_coordinates(request):
     transfer_order_id = request.GET.get('transfer_order_id', None)
     include_history = request.GET.get('include_history', False)
@@ -100,10 +117,30 @@ def test_rfid_readings(request):
         item = Item.objects.filter(epc=read.get('data').get('idHex')).first()
         if not item:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         antenna = ReaderAntenna.objects.filter(
             serial_number=read.get('data').get('antenna')
         ).select_related('position').first()
+        location = Location.objects.filter(
+            position=antenna.position
+        ).first()
+
+        if (
+            not item.last_seen_location
+            or item.last_seen_location != location
+        ):
+            item.last_seen_location = item.current_location
+
+        if (
+            not item.last_seen_position
+            or item.current_position != antenna.position
+        ):
+            item.last_seen_position = item.current_position
+
+        item.current_location = location
         item.current_position = antenna.position
+
+
         match antenna.id:
             case 1 | 3:
                 item.last_seen_timestamp = now
