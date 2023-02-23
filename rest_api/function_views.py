@@ -1,13 +1,17 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 
+from inventory.models import Item
 from rfid.view_models import *
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from rest_framework.decorators import api_view
+
+from warehouse.models import TransferOrderTracking, TransferOrderItem
 
 
 @api_view(['GET'])
@@ -16,13 +20,13 @@ def missing_items_readings(request):
 
     data = LastReadingsSnapshot.objects.filter(
         timestamp_reading__lt=time_threshold
-    ).select_related('sku').select_related('antenna')
+    ).select_related('sku').select_related('antenna', 'position')
 
     response = {"data": []}
     for row in data:
         try:
             response["data"].append(
-                {'sku': row.sku.display_name, 'antenna_name': row.antenna.name, 'serial': row.epc}
+                {'sku': row.sku.display_name, 'position_name': row.position.name, 'serial': row.epc}
             )
         except Exception as e:
             print("could not add missing", row.epc)  # this should be using logging
@@ -37,7 +41,7 @@ def reading_zones_summary(request):
         epc__in=items,
         antenna_id__in=[1, 3],
     ).values(
-        'antenna', 'antenna__name'
+        'antenna', 'antenna__name', 'position', 'position__name'
     ).annotate(
         total=Count('antenna', filter=Q(timestamp_reading__gte=time_threshold))
     ).order_by('total')
@@ -47,7 +51,7 @@ def reading_zones_summary(request):
     for row in data:
         try:
             response["data"].append(
-                {'antenna': row["antenna"], 'antenna__name': row["antenna__name"], 'total': row["total"]}
+                {'antenna': row["antenna"], 'position__name': row["position__name"], 'total': row["total"]}
             )
         except Exception as e:
             print("could not add reading", row.epc)  # this should be use logging
@@ -98,7 +102,8 @@ def test_rfid_readings(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
         antenna = ReaderAntenna.objects.filter(
             serial_number=read.get('data').get('antenna')
-        ).first()
+        ).select_related('position').first()
+        item.current_position = antenna.position
         match antenna.id:
             case 1 | 3:
                 item.last_seen_timestamp = now

@@ -1,7 +1,7 @@
 <div>
 {% if record.epc %}
-    <a href="{% url 'logistics:item-detail' record.epc %}">{{record.epc}}</a>
+    <a href="{% url 'inventory:item-detail' record.epc %}">{{record.epc}}</a>
 {% else %}
-    <a href="{% url 'logistics:sku_detail' record.sku_id %}">{{record.sku.display_name}}</a>
+    <a href="{% url 'inventory:sku_detail' record.sku_id %}">{{record.sku.display_name}}</a>
 {% endif %}
 </div>

@@ -47,7 +47,7 @@
                         {%for row in reading_summary_snapshot %}
                             <tbody id="readings-table" class="font-sm">
                                 <tr>
-                                    <td>{{row.antenna__name}}</td>
+                                    <td>{{row.position_name}}</td>
                                     <td id="totalId{{row.antenna}}">{{row.total}}</td>
                                 </tr>
                             </tbody>
@@ -222,7 +222,7 @@ function fetchAndUpdateData(){
            $('#missingItemsTable').append(
                '<tr>' +
                 '<td>'+ val.sku+ '<br/>' + val.serial + '</td> ' +
-                '<td>'+ val.antenna_name +'</td>' +
+                '<td>'+ val.position_name +'</td>' +
                '</tr>'
            );
       });

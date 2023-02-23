@@ -1,9 +1,12 @@
 from dal import autocomplete
-from django.db.models import Count
+from django.db.models import Count, F
 from django.views.generic import DetailView
 from django_tables2 import SingleTableView, SingleTableMixin
 
-from inventory.models import SKU, Location, Item
+from inventory.filters import SKUFilter, ItemFilter, InventorySummaryFilter, ItemListFilter
+from inventory.forms import SKUfilterForm, InventorySummaryFilterForm, ItemFilterForm
+from inventory.models import SKU, Location, Item, InventorySummary
+from inventory.tables import SkuInventoryTable, SKUDetailTable, ItemTable, InventorySummaryTable
 
 
 class SKUInventoryView(SingleTableView):
@@ -100,7 +103,6 @@ class ItemListView(SingleTableView):
     }
 
     def get_table_data(self):
-        #return Item.objects.all().order_by('epc')
         return self.filterset_class(self.request.GET, queryset=Item.objects.all()).qs
 
     def get_context_data(self, **kwargs):

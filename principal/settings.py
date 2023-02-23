@@ -33,8 +33,6 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'rfid.apps.RfidConfig',
-    'rest_api.apps.RestApiConfig',
 ]
 
 APPS = [
@@ -80,42 +78,18 @@ WSGI_APPLICATION = 'principal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if os.getenv('GAE_APPLICATION', None) or os.getenv('GAE_INSTANCE', None):
-    # Running on production App Engine, so connect to Google Cloud SQL using
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': '/cloudsql/healthy-zone-266815:us-central1:iot-rfid-test',
-            'PORT': '5432',
-            'NAME': 'iot-demo',
-            'USER': 'iot_app_user',
-            'PASSWORD': 'tkGcbOC2w8x3tos1',
-        }
+# Running locally so connect to either a local MySQL instance or connect
+# to Cloud SQL via the proxy.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': '5432',
+        'NAME': os.getenv('DATABASE_NAME', 'logistic'),
+        'USER': os.getenv('DATABASE_USER', 'logistic'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'logistic')
     }
-elif os.getenv('BD_DEBUG'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'iotdemo',
-            'USER': 'iot',
-            'PASSWORD': 'iot_password',
-            'HOST': 'localhost',
-            'PORT': '5432'
-        }
-    }
-else:
-    # Running locally so connect to either a local MySQL instance or connect
-    # to Cloud SQL via the proxy.
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-            'PORT': '5432',
-            'NAME': os.getenv('DATABASE_NAME', 'logistic'),
-            'USER': os.getenv('DATABASE_USER', 'logistic'),
-            'PASSWORD': os.getenv('DATABASE_PASSWORD', 'logistic')
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

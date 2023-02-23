@@ -7,7 +7,7 @@ from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from rfid import models
+from inventory import models
 
 FILES = {
     'skus': 'data/skus.csv',

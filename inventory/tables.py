@@ -1,4 +1,4 @@
-from django_tables2 import tables
+import django_tables2 as tables
 
 from inventory.models import SKU, InventorySummary, Item
 from shared.tables import TableBase
@@ -61,7 +61,7 @@ class ItemTable(TableBase):
     reference = tables.Column(accessor='display_name', verbose_name='Referencia')
     packing = tables.Column(accessor='packing_unit__name', verbose_name='Packing')
     current_location = tables.Column(accessor='current_location', verbose_name="Bodega")
-    count = tables.Column(empty_values=(), verbose_name="Cant")
+    current_position = tables.Column(accessor='current_position', verbose_name='Posicion')
     review = tables.TemplateColumn(
         template_name="dashboard/logistics/inventory/partials/item_read_icon_cell.html",
         orderable=False, verbose_name='')
@@ -69,11 +69,8 @@ class ItemTable(TableBase):
     class Meta(TableBase.Meta):
         model = Item
         sequence = (
-            'serial', 'reference', 'packing','count', 'current_location', 'review'
+            'serial', 'reference', 'packing', 'current_location', 'current_position', 'review'
         )
         fields = (
-            'reference', 'packing', 'serial', 'count', 'current_location', 'review'
+            'reference', 'packing', 'serial', 'current_location', 'current_position', 'review'
         )
-
-    def render_count(self):
-        return "1"

@@ -7,7 +7,7 @@
             <h3 class="modal-title">Crear Orden de transferencia</h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action='{% url "logistics:inventory-create_transfer_order" %}' method="POST">
+        <form action='{% url "warehouse:create_transfer_order" %}' method="POST">
             <div class="modal-body"></div>
             <div class="modal-footer">
                 <input type="submit" class="btn btn-primary" value="Crear" style="margin-bottom: 5px"/>

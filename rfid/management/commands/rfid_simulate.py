@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 from django.core.management import BaseCommand
 
-from rfid.models import Item
+from inventory.models import Item
 
 
 class Command(BaseCommand):

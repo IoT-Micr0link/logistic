@@ -1,4 +1,5 @@
-from django_tables2 import tables, A
+import django_tables2 as tables
+from django_tables2 import A
 
 from shared.tables import TableBase
 from warehouse.models import TransferOrder, TransferOrderItem, WarehouseEntry, WarehouseEntryItem

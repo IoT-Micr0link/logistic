@@ -1,4 +1,4 @@
-from django.forms import forms
+from django import forms
 
 from inventory.models import Item
 from warehouse.models import TransferOrder, TransferOrderItem

@@ -1,7 +1,7 @@
 """RFID Models"""
 
 from django.db import models
-from inventory.models import Location
+from inventory.models import Location, Position
 
 
 class Node(models.Model):
@@ -10,7 +10,10 @@ class Node(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{}-{}'.format(self.id, self.location)
+        return '{}-{}'.format(self.pk, self.location)
+
+    class Meta:
+        db_table = 'node'
 
 
 class ReaderBrand(models.Model):
@@ -19,23 +22,36 @@ class ReaderBrand(models.Model):
     def __str__(self):
         return '{}'.format(self.name)
 
+    class Meta:
+        db_table = 'reader_brand'
+
 
 class Reader(models.Model):
     name = models.CharField(max_length=140)
     serial_number = models.CharField(max_length=140, unique=True)
-    brand = models.ForeignKey(ReaderBrand, on_delete=models.PROTECT)
+    brand = models.OneToOneField(ReaderBrand, on_delete=models.PROTECT)
 
     def __str__(self):
         return '{}-[{}]'.format(self.brand, self.serial_number)
+
+    class Meta:
+        db_table = 'reader'
 
 
 class ReaderAntenna(models.Model):
     name = models.CharField(max_length=140)
     serial_number = models.CharField(max_length=140, unique=True)
     reader = models.ForeignKey(Reader, on_delete=models.CASCADE)
+    position = models.OneToOneField(
+        Position, on_delete=models.DO_NOTHING, related_name='antennas',
+        blank=True, null=True
+    )
 
     def __str__(self):
         return '{}-[{}]'.format(self.name, self.name)
+
+    class Meta:
+        db_table = 'reader_antenna'
 
 
 class Reading(models.Model):
@@ -54,3 +70,6 @@ class Reading(models.Model):
 
     def __str__(self):
         return '{}-[{}]'.format(self.epc, self.reader)
+
+    class Meta:
+        db_table = 'reading'

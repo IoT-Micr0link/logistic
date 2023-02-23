@@ -1,16 +1,9 @@
-from datetime import date, timezone, timedelta
+from datetime import date, timedelta
 
 from django.conf import settings
+from django.utils import timezone
 from django.db import models
 from django.db.models import Q
-
-
-class Location(models.Model):
-    name = models.CharField(max_length=140)
-    description = models.CharField(max_length=140, null=True, blank=True)
-
-    def __str__(self):
-        return '{}'.format(self.name)
 
 
 class Sites(models.Model):
@@ -18,6 +11,32 @@ class Sites(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'sites'
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=140)
+    description = models.CharField(max_length=140, null=True, blank=True)
+    site = models.ForeignKey(Sites, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.site.name} - {self.name}'
+
+    class Meta:
+        db_table = 'location'
+
+
+class Position(models.Model):
+    name = models.CharField(max_length=50)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.location.name} -> {self.name}'
+
+    class Meta:
+        db_table = 'position'
 
 
 class SKU(models.Model):
@@ -27,7 +46,7 @@ class SKU(models.Model):
     data = models.JSONField(null=True, blank=True)
 
     def __str__(self):
-        return f'<{self.id}> {self.display_name}'
+        return f'<{self.pk}> {self.display_name}'
 
     @property
     def total_inventory(self):
@@ -37,6 +56,9 @@ class SKU(models.Model):
     def total_locations_inventory(self):
         return Item.objects.filter(sku=self).values('current_location__id').distinct().count()
 
+    class Meta:
+        db_table = 'sku'
+
 
 class PackingUnit(models.Model):
     name = models.CharField(max_length=10)
@@ -44,6 +66,9 @@ class PackingUnit(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'packing_unit'
 
 
 class Item(models.Model):
@@ -53,8 +78,11 @@ class Item(models.Model):
         ('READ', 'Lectura')
     )
     epc = models.CharField(max_length=150, primary_key=True)
-    current_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT,
-                                         related_name="current_items")
+    current_location = models.ForeignKey(
+        Location, null=True, on_delete=models.PROTECT,
+        related_name="current_items"
+    )
+    current_position = models.ForeignKey(Position, null=True, on_delete=models.PROTECT)
     last_seen_location = models.ForeignKey(Location, null=True, on_delete=models.PROTECT)
     last_seen_timestamp = models.DateTimeField(null=True)
     last_seen_action = models.CharField(max_length=10, choices=ACTION, default='IN')
@@ -79,6 +107,9 @@ class Item(models.Model):
     def not_seen_recently(self):
         time_threshold = timezone.now() - timedelta(seconds=settings.RFID_READING_CYCLE)
         return self.last_seen_timestamp < time_threshold
+
+    class Meta:
+        db_table = 'item'
 
 
 class InventorySummary(models.Model):

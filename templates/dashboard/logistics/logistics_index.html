@@ -10,7 +10,7 @@
                     <div class="card card-accent-info">
                         <div class="card-header">
                             <span class="h2">Inventario <i class="fa fa-line-chart" aria-hidden="true"></i></span>
-                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:item-inventory' %}" role="button">Ver</a>
+                            <a class="btn btn-outline-info float-right" href="{% url 'inventory:item-inventory' %}" role="button">Ver</a>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -60,8 +60,8 @@
                     <div class="card card-accent-info">
                     <div class="card-header">
                         <span class="h2">Tracking <i class="fa fa-map-marker" aria-hidden="true"></i></span>
-                        <a class="btn btn-outline-info float-right " href="{% url 'logistics:tracking-transfer-orders' %}" role="button">Ver pedido</a>
-                        <a class="btn btn-outline-info float-right mx-2" href="{% url 'logistics:tracking-warehouse' %}" role="button">Ver bodega</a>
+                        <a class="btn btn-outline-info float-right " href="{% url 'warehouse:tracking-transfer-orders' %}" role="button">Ver pedido</a>
+                        <a class="btn btn-outline-info float-right mx-2" href="{% url 'warehouse:tracking-warehouse' %}" role="button">Ver bodega</a>
                     </div>
                     <div class="card-body">Texto por definir</div>
                     </div>
@@ -70,7 +70,7 @@
                     <div class="card card-accent-info">
                         <div class="card-header">
                             <span class="h2">Entradas<i class="fa fa-arrow-circle-up" aria-hidden="true"></i></span>
-                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:warehouse-entry-list' %}" role="button">Ver</a>
+                            <a class="btn btn-outline-info float-right" href="{% url 'warehouse:warehouse-entry-list' %}" role="button">Ver</a>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -101,7 +101,7 @@
                     <div class="card card-accent-info">
                         <div class="card-header">
                             <span class="h2">Salidas <i class="fa fa-arrow-circle-down" aria-hidden="true"></i></span>
-                            <a class="btn btn-outline-info float-right" href="{% url 'logistics:transfer-order-list' %}" role="button">Ver</a>
+                            <a class="btn btn-outline-info float-right" href="{% url 'warehouse:transfer-order-list' %}" role="button">Ver</a>
                         </div>
                         <div class="card-body">
                             <div class="row">

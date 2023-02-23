@@ -12,17 +12,14 @@ urlpatterns = [
 
     # URLS LOGISTICS (Include rfid.urls)
 
-    path('logistics/', include(('rfid.urls', 'rfid'), namespace='logistics')),
+    path('rfid/', include(('rfid.urls', 'rfid'), namespace='rfid')),
+    path('inventory/', include(('inventory.urls', 'inventory'), namespace='inventory')),
+    path('warehouse/', include(('warehouse.urls', 'warehouse'), namespace='warehouse')),
+    path('reports/', include(('reports.urls', 'reports'), namespace='reports')),
 
     # REST API URL (Include rest_api.url)
 
-    path('rest_api/', include(('rest_api.urls', 'rest_api'), namespace='rest_api')),
-
-    #Autocomplete
-    path('autocomplete/skus/', rfid_views.SKUAutocomplete.as_view(), name='sku-autocomplete'),
-    path('autocomplete/locations/', rfid_views.LocationAutocomplete.as_view(), name='location-autocomplete'),
-    path('autocomplete/items', rfid_views.ItemAutocomplete.as_view(), name='item-autocomplete')
-
+    path('api/', include(('rest_api.urls', 'rest_api'), namespace='rest_api')),
 ]
 
 if settings.DEBUG:

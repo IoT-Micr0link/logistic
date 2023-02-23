@@ -25,8 +25,7 @@ RUN mkdir -p /home/logistic && chown user:user /home/logistic
 WORKDIR /home/logistic
 
 COPY --chown=user:user requirements/common.txt /home/logistic
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r common.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r common.txt
 
 COPY --chown=user:user . /logistic
 

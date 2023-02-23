@@ -1,5 +1,7 @@
 from django.views.generic import TemplateView
-from rfid.models import Item, SKU, WarehouseEntry, TransferOrder, TransferOrderItem
+
+from inventory.models import Item, SKU
+from warehouse.models import WarehouseEntry, TransferOrderItem, TransferOrder
 
 
 class DashboardView(TemplateView):
