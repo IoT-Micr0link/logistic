@@ -19,7 +19,7 @@ start: up load-initial-rfid load-initial-data
 
 # Stop and remove the Docker containers
 down:
-	docker-compose down $(if $(v),-v)
+	docker-compose down${v:+ -v}
 
 clean-poc:
 	docker compose exec app python manage.py clean_poc
